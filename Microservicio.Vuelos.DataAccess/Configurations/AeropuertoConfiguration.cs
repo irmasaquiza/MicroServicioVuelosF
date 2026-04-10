@@ -1,10 +1,105 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microservicio.Vuelos.DataAccess.Entities;
 
-namespace Microservicio.Vuelos.DataAccess.Configurations
+namespace Microservicio.Vuelos.DataAccess.Configuration
 {
-    internal class AeropuertoConfiguration
+    public class AeropuertoConfiguration : IEntityTypeConfiguration<AeropuertoEntity>
     {
+        public void Configure(EntityTypeBuilder<AeropuertoEntity> builder)
+        {
+            // 🗂️ Tabla
+            builder.ToTable("AEROPUERTO", "aero");
+
+            // 🔑 PK
+            builder.HasKey(x => x.IdAeropuerto);
+
+            builder.Property(x => x.IdAeropuerto)
+                   .HasColumnName("id_aeropuerto");
+
+            // 🔁 RowVersion
+            builder.Property(x => x.RowVersion)
+                   .IsRowVersion()
+                   .HasColumnName("row_version");
+
+            // 🔗 FK
+            builder.Property(x => x.IdCiudad)
+                   .IsRequired()
+                   .HasColumnName("id_ciudad");
+
+            builder.Property(x => x.IdPais)
+                   .IsRequired()
+                   .HasColumnName("id_pais");
+
+            // 🏷️ Campos
+            builder.Property(x => x.CodigoIata)
+                   .IsRequired()
+                   .HasMaxLength(3)
+                   .HasColumnName("codigo_iata");
+
+            builder.Property(x => x.Nombre)
+                   .IsRequired()
+                   .HasMaxLength(150)
+                   .HasColumnName("nombre");
+
+            builder.Property(x => x.Latitud)
+                   .HasColumnType("decimal(9,6)")
+                   .HasColumnName("latitud");
+
+            builder.Property(x => x.Longitud)
+                   .HasColumnType("decimal(9,6)")
+                   .HasColumnName("longitud");
+
+            builder.Property(x => x.ZonaHoraria)
+                   .HasMaxLength(50)
+                   .HasColumnName("zona_horaria");
+
+            builder.Property(x => x.Estado)
+                   .IsRequired()
+                   .HasMaxLength(20)
+                   .HasColumnName("estado");
+
+            builder.Property(x => x.Eliminado)
+                   .HasColumnName("eliminado");
+
+            builder.Property(x => x.FechaRegistroUtc)
+                   .HasColumnName("fecha_registro_utc");
+
+            builder.Property(x => x.CreadoPorUsuario)
+                   .HasMaxLength(100)
+                   .HasColumnName("creado_por_usuario");
+
+            builder.Property(x => x.ModificadoPorUsuario)
+                   .HasMaxLength(100)
+                   .HasColumnName("modificado_por_usuario");
+
+            builder.Property(x => x.FechaModificacionUtc)
+                   .HasColumnName("fecha_modificacion_utc");
+
+            builder.Property(x => x.ModificacionIp)
+                   .HasMaxLength(50)
+                   .HasColumnName("modificacion_ip");
+
+            // 🔗 Relaciones
+
+            builder.HasOne(x => x.Ciudad)
+                   .WithMany(c => c.Aeropuertos)
+                   .HasForeignKey(x => x.IdCiudad)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Pais)
+                   .WithMany(p => p.Aeropuertos)
+                   .HasForeignKey(x => x.IdPais)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            // ⚡ Índices
+
+            builder.HasIndex(x => x.CodigoIata)
+                   .IsUnique()
+                   .HasDatabaseName("UQ_AEROPUERTO_CODIGO_IATA");
+        }
     }
 }
