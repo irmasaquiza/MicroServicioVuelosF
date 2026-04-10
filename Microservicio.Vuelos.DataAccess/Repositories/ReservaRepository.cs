@@ -41,7 +41,7 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
         public async Task<ReservaEntity> GetByGuidAsync(Guid reservaGuid)
         {
             return await _context.Reservas
-                .FirstOrDefaultAsync(r => r.ReservaGuid == reservaGuid && !r.EsEliminado);
+                .FirstOrDefaultAsync(r => r.GuidReserva == reservaGuid && !r.EsEliminado);
         }
 
         // 🔍 Obtener por código (PNR)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,7 +37,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
         }
 
         // 👤 Perfil completo del cliente
-        public async Task<object> GetPerfilClienteAsync(int idCliente)
+        public async Task<object?> GetPerfilClienteAsync(int idCliente)
         {
             return await _context.Clientes
                 .Where(c => c.IdCliente == idCliente && !c.EsEliminado)
@@ -69,14 +68,14 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                 {
                     r.IdReserva,
                     r.CodigoReserva,
-                    r.FechaReserva,
+                    FechaReserva = r.FechaReservaUtc, // 🔥 corregido
                     r.EstadoReserva,
                     r.TotalReserva
                 })
                 .ToListAsync();
         }
 
-        // 🎟️ Boletos del cliente (via reservas)
+        // 🎟️ Boletos del cliente
         public async Task<IEnumerable<object>> GetBoletosClienteAsync(int idCliente)
         {
             return await _context.Boletos

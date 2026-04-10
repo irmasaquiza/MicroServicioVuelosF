@@ -40,6 +40,11 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasMaxLength(3)
                    .HasColumnName("codigo_iata");
 
+            builder.Property(x => x.CodigoIcao)
+                   .IsRequired()
+                   .HasMaxLength(3)
+                   .HasColumnName("codigo_icao");
+
             builder.Property(x => x.Nombre)
                    .IsRequired()
                    .HasMaxLength(150)

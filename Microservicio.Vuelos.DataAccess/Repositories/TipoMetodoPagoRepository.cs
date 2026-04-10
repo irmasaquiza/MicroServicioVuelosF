@@ -29,27 +29,29 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
         }
 
         // 🔍 Obtener por ID
-        public async Task<TipoMetodoPagoEntity> GetByIdAsync(int id)
-        {
-            return await _context.TiposMetodoPago
-                .FirstOrDefaultAsync(t => t.IdTipoMetodo == id && !t.EsEliminado);
-        }
-
-        // 🔍 Buscar por código (TARJETA, PAYPAL, etc.)
-        public async Task<TipoMetodoPagoEntity> GetByCodigoAsync(string codigo)
+        public async Task<TipoMetodoPagoEntity?> GetByIdAsync(int id)
         {
             return await _context.TiposMetodoPago
                 .FirstOrDefaultAsync(t =>
-                    t.Codigo == codigo &&
+                    t.IdTipoMetodo == id &&
                     !t.EsEliminado);
         }
 
-        // 🔍 Buscar por nombre
+        // 🔍 Buscar por nombre exacto
+        public async Task<TipoMetodoPagoEntity?> GetByNombreExactoAsync(string nombre)
+        {
+            return await _context.TiposMetodoPago
+                .FirstOrDefaultAsync(t =>
+                    t.NombreTipo == nombre &&
+                    !t.EsEliminado);
+        }
+
+        // 🔍 Buscar por nombre parcial
         public async Task<IEnumerable<TipoMetodoPagoEntity>> GetByNombreAsync(string nombre)
         {
             return await _context.TiposMetodoPago
                 .Where(t =>
-                    t.Nombre.Contains(nombre) &&
+                    t.NombreTipo.Contains(nombre) &&
                     !t.EsEliminado)
                 .ToListAsync();
         }

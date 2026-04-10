@@ -28,7 +28,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                 {
                     r.IdReserva,
                     r.CodigoReserva,
-                    r.FechaReserva,
+                    FechaReserva = r.FechaReservaUtc, // 🔥 corregido
                     r.EstadoReserva,
                     r.TotalReserva,
                     Cliente = r.Cliente.Nombres + " " + r.Cliente.Apellidos,
@@ -38,7 +38,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
         }
 
         // 🧾 Detalle completo de reserva
-        public async Task<object> GetDetalleReservaAsync(int idReserva)
+        public async Task<object?> GetDetalleReservaAsync(int idReserva)
         {
             return await _context.Reservas
                 .Where(r => r.IdReserva == idReserva && !r.EsEliminado)
@@ -46,7 +46,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                 {
                     r.IdReserva,
                     r.CodigoReserva,
-                    r.FechaReserva,
+                    FechaReserva = r.FechaReservaUtc, // 🔥 corregido
                     r.EstadoReserva,
                     r.TotalReserva,
 
@@ -61,7 +61,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                     {
                         r.Pasajero.NombrePasajero,
                         r.Pasajero.ApellidoPasajero,
-                        r.Pasajero.NumeroDocumentoPasajero
+                        r.Pasajero.NumeroDocumentoPasajero // 🔥 corregido
                     }
                 })
                 .FirstOrDefaultAsync();

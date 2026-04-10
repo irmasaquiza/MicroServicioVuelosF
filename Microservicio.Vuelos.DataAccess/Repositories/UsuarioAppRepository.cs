@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,15 +28,17 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
                 .ToListAsync();
         }
 
-        // 🔍 Obtener por ID (CORREGIDO)
-        public async Task<UsuarioAppEntity> GetByIdAsync(int id)
+        // 🔍 Obtener por ID
+        public async Task<UsuarioAppEntity?> GetByIdAsync(int id)
         {
             return await _context.UsuariosApp
-                .FirstOrDefaultAsync(u => u.IdUsuario == id && !u.EsEliminado);
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == id &&
+                    !u.EsEliminado);
         }
 
         // 🔍 Buscar por username
-        public async Task<UsuarioAppEntity> GetByUsernameAsync(string username)
+        public async Task<UsuarioAppEntity?> GetByUsernameAsync(string username)
         {
             return await _context.UsuariosApp
                 .FirstOrDefaultAsync(u =>
@@ -45,21 +46,23 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
                     !u.EsEliminado);
         }
 
-        // 🔍 Buscar por email
-        public async Task<UsuarioAppEntity> GetByEmailAsync(string email)
+        // 🔍 Buscar por correo
+        public async Task<UsuarioAppEntity?> GetByCorreoAsync(string correo)
         {
             return await _context.UsuariosApp
                 .FirstOrDefaultAsync(u =>
-                    u.Email == email &&
+                    u.Correo == correo &&
                     !u.EsEliminado);
         }
 
         // 🔍 Validar login
-        public async Task<UsuarioAppEntity> GetByCredencialesAsync(string usernameOrEmail, string passwordHash)
+        public async Task<UsuarioAppEntity?> GetByCredencialesAsync(string usernameOrEmail, string passwordHash)
         {
+            var input = usernameOrEmail.ToLower();
+
             return await _context.UsuariosApp
                 .FirstOrDefaultAsync(u =>
-                    (u.Username == usernameOrEmail || u.Email == usernameOrEmail) &&
+                    (u.Username.ToLower() == input || u.Correo.ToLower() == input) &&
                     u.PasswordHash == passwordHash &&
                     !u.EsEliminado);
         }

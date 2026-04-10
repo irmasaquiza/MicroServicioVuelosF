@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microservicio.Vuelos.DataAccess.Entities;
@@ -14,12 +13,12 @@ namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
         Task<IEnumerable<TipoMetodoPagoEntity>> GetAllAsync();
 
         // 🔍 Obtener por ID
-        Task<TipoMetodoPagoEntity> GetByIdAsync(int id);
+        Task<TipoMetodoPagoEntity?> GetByIdAsync(int id);
 
-        // 🔍 Buscar por código (TARJETA, PAYPAL, TRANSFERENCIA)
-        Task<TipoMetodoPagoEntity> GetByCodigoAsync(string codigo);
+        // 🔍 Buscar por nombre exacto
+        Task<TipoMetodoPagoEntity?> GetByNombreExactoAsync(string nombre);
 
-        // 🔍 Buscar por nombre
+        // 🔍 Buscar por nombre parcial
         Task<IEnumerable<TipoMetodoPagoEntity>> GetByNombreAsync(string nombre);
 
         // ➕ Crear

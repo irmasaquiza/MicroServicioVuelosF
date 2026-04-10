@@ -42,10 +42,20 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("clase");
 
 
+
             builder.Property(x => x.PrecioExtra)
                    .HasColumnType("decimal(10,2)")
                    .HasColumnName("precio_extra");
+            
+            builder.Property(x => x.Disponible)
+                   .HasColumnName("disponible")
+                   .IsRequired()
+                   .HasDefaultValue(true);
 
+            builder.Property(x => x.Posicion)
+                   .HasColumnName("posicion")
+                   .HasMaxLength(20)
+                   .IsRequired(false);
 
             builder.Property(x => x.Estado)
                    .IsRequired()
