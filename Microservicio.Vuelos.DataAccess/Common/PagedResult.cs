@@ -13,10 +13,10 @@ namespace Microservicio.Vuelos.DataAccess.Models
         public IEnumerable<T> Items { get; set; }
 
         // 🔢 Paginación
-        public int TotalRegistros { get; set; }
-        public int TotalPaginas { get; set; }
-        public int PaginaActual { get; set; }
-        public int TamanoPagina { get; set; }
+        public int TotalRegistros { get; set; } //total
+        public int TotalPaginas { get; set; } //total_pages
+        public int PaginaActual { get; set; } // page
+        public int TamanoPagina { get; set; } // page_size
 
         // 📊 Extras útiles
         public bool TienePaginaAnterior => PaginaActual > 1;
