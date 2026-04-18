@@ -10,6 +10,8 @@ namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
 {
     public interface IUsuarioRolRepository
     {
+        Task<UsuarioRolEntity> GetByIdAsync(int id); // 👈 AGREGA ESTO
+
         // 🔍 Obtener todos
         Task<IEnumerable<UsuarioRolEntity>> GetAllAsync();
 
@@ -24,6 +26,9 @@ namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
 
         // ➕ Asignar rol a usuario
         Task AddAsync(UsuarioRolEntity usuarioRol);
+
+        void Update(UsuarioRolEntity entity); // 🔥 AGREGA ESTO
+
 
         // ❌ Quitar rol (eliminación directa, no lógica normalmente)
         void Delete(UsuarioRolEntity usuarioRol);

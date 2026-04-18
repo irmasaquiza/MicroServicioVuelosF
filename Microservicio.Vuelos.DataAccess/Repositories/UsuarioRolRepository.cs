@@ -21,6 +21,12 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
             _context = context;
         }
 
+        public async Task<UsuarioRolEntity> GetByIdAsync(int id)
+        {
+            return await _context.UsuariosRoles
+                .FirstOrDefaultAsync(ur => ur.IdUsuarioRol == id && !ur.EsEliminado);
+        }
+
         // 🔍 Obtener todos
         public async Task<IEnumerable<UsuarioRolEntity>> GetAllAsync()
         {
@@ -59,6 +65,10 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
         public async Task AddAsync(UsuarioRolEntity usuarioRol)
         {
             await _context.UsuariosRoles.AddAsync(usuarioRol);
+        }
+        public void Update(UsuarioRolEntity entity)
+        {
+            _context.UsuariosRoles.Update(entity);
         }
 
         // ❌ Quitar rol (soft delete según TU entity)

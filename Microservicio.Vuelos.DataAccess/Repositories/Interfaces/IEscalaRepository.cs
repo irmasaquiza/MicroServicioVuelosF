@@ -8,7 +8,7 @@ using Microservicio.Vuelos.DataAccess.Entities;
 
 namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
 {
-    internal interface IEscalaRepository
+    public interface IEscalaRepository
     {
         // 🔍 Obtener todas
         Task<IEnumerable<EscalaEntity>> GetAllAsync();
