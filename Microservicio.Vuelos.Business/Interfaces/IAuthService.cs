@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Internal.Auth;
 
 namespace Microservicio.Vuelos.Business.Interfaces
 {
-    internal interface IAuthService
+    public interface IAuthService
     {
+        Task<LoginResponse> LoginAsync(LoginRequest request);
     }
 }
