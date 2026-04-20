@@ -7,7 +7,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <None Remove="Controllers\V1\Internal\120surnx.dwy~" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\V1\Booking\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.25" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microservicio.Vuelos.Business\Microservicio.Vuelos.Business.csproj" />
+    <ProjectReference Include="..\Microservicio.Vuelos.DataAccess\Microservicio.Vuelos.DataAccess.csproj" />
+    <ProjectReference Include="..\Microservicio.Vuelos.DataManagement\Microservicio.Vuelos.DataManagement.csproj" />
   </ItemGroup>
 
 </Project>

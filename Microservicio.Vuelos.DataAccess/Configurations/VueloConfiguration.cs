@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microservicio.Vuelos.DataAccess.Entities;
 
@@ -33,7 +29,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             builder.Property(x => x.IdAeropuertoDestino)
                    .HasColumnName("id_aeropuerto_destino");
 
-            // ⚠️ IMPORTANTE: TU ENTITY usa CodigoVuelo pero BD usa numero_vuelo
+            // ⚠️ MAPEO REAL BD
             builder.Property(x => x.CodigoVuelo)
                    .IsRequired()
                    .HasMaxLength(10)
@@ -58,27 +54,16 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             builder.Property(x => x.CapacidadTotal)
                    .HasColumnName("capacidad_total");
 
-            // ⚠️ ESTE NO EXISTE EN BD → SOLO MAPEO NORMAL (NO COLUMNNAME EXTRA)
-            builder.Property(x => x.CapacidadDisponible);
-
             // ✈️ Estado vuelo
             builder.Property(x => x.EstadoVuelo)
                    .HasMaxLength(20)
                    .HasColumnName("estado_vuelo");
-
-            // ⚠️ CAMPOS QUE NO ESTÁN EN BD → NO mapear con columnName
-            builder.Property(x => x.TipoVuelo);
-            builder.Property(x => x.Aerolinea);
-            builder.Property(x => x.NumeroGate);
-            builder.Property(x => x.Terminal);
-            builder.Property(x => x.Observaciones);
 
             // ⚙️ Estado técnico
             builder.Property(x => x.Estado)
                    .HasMaxLength(20)
                    .HasColumnName("estado");
 
-            // ⚠️ BD usa "eliminado" no "es_eliminado"
             builder.Property(x => x.EsEliminado)
                    .HasColumnName("eliminado");
 
@@ -101,14 +86,16 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasMaxLength(45)
                    .HasColumnName("modificacion_ip");
 
-            // 🔗 RELACIONES (SIN CONFUNDIR EF)
+            // 🔗 RELACIONES
             builder.HasOne(x => x.AeropuertoOrigen)
                    .WithMany()
-                   .HasForeignKey(x => x.IdAeropuertoOrigen);
+                   .HasForeignKey(x => x.IdAeropuertoOrigen)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.AeropuertoDestino)
                    .WithMany()
-                   .HasForeignKey(x => x.IdAeropuertoDestino);
+                   .HasForeignKey(x => x.IdAeropuertoDestino)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.Escalas)
                    .WithOne(e => e.Vuelo)

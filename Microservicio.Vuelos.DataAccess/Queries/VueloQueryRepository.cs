@@ -32,7 +32,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                     Destino = v.AeropuertoDestino.Nombre,
                     v.FechaHoraSalida,
                     v.EstadoVuelo,
-                    v.CapacidadDisponible
+                    v.CapacidadTotal
                 })
                 .ToListAsync();
         }
@@ -55,7 +55,6 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                     Destino = v.AeropuertoDestino.Nombre,
 
                     v.CapacidadTotal,
-                    v.CapacidadDisponible,
                     v.PrecioBase
                 })
                 .FirstOrDefaultAsync();

@@ -13,7 +13,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
         public void Configure(EntityTypeBuilder<PaisEntity> builder)
         {
             // 🗂️ Tabla
-            builder.ToTable("Pais", "crm");
+            builder.ToTable("Pais", "aero");
 
             // 🔑 PK
             builder.HasKey(x => x.IdPais);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microservicio.Vuelos.DataAccess.Entities;
 
@@ -11,32 +8,28 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
     {
         public void Configure(EntityTypeBuilder<UsuarioAppEntity> builder)
         {
-            // 🗂️ Tabla
             builder.ToTable("USUARIO_APP", "seg");
 
-            // 🔑 PK
             builder.HasKey(x => x.IdUsuario);
 
             builder.Property(x => x.IdUsuario)
                    .HasColumnName("id_usuario")
                    .ValueGeneratedOnAdd();
 
-            // 🆔 GUID
             builder.Property(x => x.UsuarioGuid)
                    .HasColumnName("usuario_guid")
                    .HasDefaultValueSql("NEWID()")
                    .IsRequired();
 
-            // 🔗 FK Cliente (nullable)
             builder.Property(x => x.IdCliente)
                    .HasColumnName("id_cliente");
 
+            // 🔥 🔥 🔥 AQUÍ ESTÁ LA CORRECCIÓN
             builder.HasOne(x => x.Cliente)
-                   .WithMany()
+                   .WithMany(c => c.UsuariosApp)
                    .HasForeignKey(x => x.IdCliente)
                    .HasConstraintName("FK_USUARIO_APP_CLIENTE");
 
-            // 🏷️ Campos principales
             builder.Property(x => x.Username)
                    .IsRequired()
                    .HasMaxLength(50)
@@ -60,7 +53,6 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             builder.Property(x => x.FechaUltimoLogin)
                    .HasColumnName("fecha_ultimo_login");
 
-            // ⚙️ Estado
             builder.Property(x => x.EstadoUsuario)
                    .IsRequired()
                    .HasColumnType("char(3)")
@@ -77,7 +69,6 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasDefaultValue(true)
                    .HasColumnName("activo");
 
-            // 🧾 Auditoría
             builder.Property(x => x.CreadoPorUsuario)
                    .IsRequired()
                    .HasMaxLength(100)
@@ -100,28 +91,17 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasMaxLength(45)
                    .HasColumnName("modificacion_ip");
 
-            // 🔒 Concurrencia
             builder.Property(x => x.RowVersion)
                    .IsRowVersion()
                    .HasColumnName("row_version");
 
-            // 🔗 Relación con UsuarioRol
             builder.HasMany(x => x.UsuariosRoles)
                    .WithOne(ur => ur.Usuario)
                    .HasForeignKey(ur => ur.IdUsuario);
 
-            // ⚡ Índices (UNIQUE como en BD)
-            builder.HasIndex(x => x.UsuarioGuid)
-                   .IsUnique()
-                   .HasDatabaseName("UQ_USUARIO_APP_GUID");
-
-            builder.HasIndex(x => x.Username)
-                   .IsUnique()
-                   .HasDatabaseName("UQ_USUARIO_APP_USERNAME");
-
-            builder.HasIndex(x => x.Correo)
-                   .IsUnique()
-                   .HasDatabaseName("UQ_USUARIO_APP_CORREO");
+            builder.HasIndex(x => x.UsuarioGuid).IsUnique();
+            builder.HasIndex(x => x.Username).IsUnique();
+            builder.HasIndex(x => x.Correo).IsUnique();
         }
     }
 }

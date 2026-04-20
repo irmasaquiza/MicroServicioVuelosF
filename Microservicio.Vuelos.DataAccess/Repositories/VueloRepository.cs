@@ -82,7 +82,7 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
         {
             return await _context.Vuelos
                 .Where(v =>
-                    v.CapacidadDisponible > 0 &&
+                    v.CapacidadTotal > 0 &&
                     v.EstadoVuelo == "PROGRAMADO" &&
                     !v.EsEliminado)
                 .ToListAsync();

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microservicio.Vuelos.DataAccess.Entities;
+using Microservicio.Vuelos.DataManagement.Models;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Text;
-
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microservicio.Vuelos.DataManagement.Models;
 
 namespace Microservicio.Vuelos.DataManagement.Interfaces
 {
@@ -39,5 +39,8 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
 
         // ❌ Eliminación lógica
         Task<bool> DeleteAsync(int id);
+
+        Task<UsuarioAppEntity?> GetByCredentialsAsync(string login);
+
     }
 }

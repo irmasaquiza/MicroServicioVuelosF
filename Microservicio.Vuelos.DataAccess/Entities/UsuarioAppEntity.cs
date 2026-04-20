@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -12,22 +9,22 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public Guid UsuarioGuid { get; set; }
 
-        public int? IdCliente { get; set; } // 🔥 nullable
+        public int? IdCliente { get; set; } // ✔ nullable
 
-        public string Username { get; set; }
-        public string Correo { get; set; }
+        public string Username { get; set; } = null!;
+        public string Correo { get; set; } = null!;
 
-        public string PasswordHash { get; set; }
-        public string PasswordSalt { get; set; }
+        public string PasswordHash { get; set; } = null!;
+        public string PasswordSalt { get; set; } = null!;
 
         public DateTime? FechaUltimoLogin { get; set; }
 
-        public string EstadoUsuario { get; set; }
+        public string EstadoUsuario { get; set; } = null!;
         public bool EsEliminado { get; set; }
         public bool Activo { get; set; }
 
         // 🧾 Auditoría
-        public string CreadoPorUsuario { get; set; }
+        public string CreadoPorUsuario { get; set; } = null!;
         public DateTime FechaRegistroUtc { get; set; }
 
         public string? ModificadoPorUsuario { get; set; }

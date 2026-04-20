@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-using System;
-
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
     public class EscalaEntity
@@ -22,25 +20,25 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public int DuracionMin { get; set; }
 
-        public string TipoEscala { get; set; } // TECNICA, COMERCIAL
+        public string TipoEscala { get; set; } = null!;   // ✔ obligatorio (TECNICA, COMERCIAL)
 
-        public string Terminal { get; set; }
-        public string Puerta { get; set; }
+        public string? Terminal { get; set; }             // 🔥 nullable
+        public string? Puerta { get; set; }               // 🔥 nullable
 
-        public string Observaciones { get; set; }
+        public string? Observaciones { get; set; }        // 🔥 nullable
 
-        public string Estado { get; set; }
+        public string Estado { get; set; } = null!;
         public bool Eliminado { get; set; }
 
         public DateTime FechaRegistroUtc { get; set; }
-        public string CreadoPorUsuario { get; set; }
+        public string CreadoPorUsuario { get; set; } = null!;
 
-        public string ModificadoPorUsuario { get; set; }
+        public string? ModificadoPorUsuario { get; set; } // 🔥 nullable
         public DateTime? FechaModificacionUtc { get; set; }
-        public string ModificacionIp { get; set; }
+        public string? ModificacionIp { get; set; }       // 🔥 nullable
 
         // 🔗 Relaciones
-        public virtual VueloEntity Vuelo { get; set; }
-        public virtual AeropuertoEntity Aeropuerto { get; set; }
+        public virtual VueloEntity? Vuelo { get; set; }         // 🔥 nullable
+        public virtual AeropuertoEntity? Aeropuerto { get; set; } // 🔥 nullable
     }
 }

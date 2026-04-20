@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -10,57 +9,49 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public Guid ClienteGuid { get; set; }
 
-        // Identificación
-        public string TipoIdentificacion { get; set; }
-        public string NumeroIdentificacion { get; set; }
+        public string TipoIdentificacion { get; set; } = null!;
+        public string NumeroIdentificacion { get; set; } = null!;
 
-        // Datos personales / fiscales
-        public string Nombres { get; set; }
-        public string Apellidos { get; set; }
-        public string RazonSocial { get; set; }
+        public string? Nombres { get; set; }          // 🔥 nullable (empresa vs persona)
+        public string? Apellidos { get; set; }        // 🔥 nullable
+        public string? RazonSocial { get; set; }      // 🔥 nullable
 
-        // Contacto
-        public string Correo { get; set; }
-        public string Telefono { get; set; }
-        public string Direccion { get; set; }
+        public string? Correo { get; set; }           // 🔥 nullable
+        public string? Telefono { get; set; }         // 🔥 nullable
+        public string? Direccion { get; set; }        // 🔥 nullable
 
         public int IdCiudadResidencia { get; set; }
         public int IdPaisNacionalidad { get; set; }
 
-        // Datos adicionales
         public DateTime? FechaNacimiento { get; set; }
-        public string Nacionalidad { get; set; }
-        public string Genero { get; set; }
+        public string? Nacionalidad { get; set; }     // 🔥 nullable
+        public string? Genero { get; set; }           // 🔥 nullable
 
-        // Estado
-        public string Estado { get; set; }
+        public string Estado { get; set; } = null!;
         public bool EsEliminado { get; set; }
 
-        // Auditoría
-        public string CreadoPorUsuario { get; set; }
+        public string CreadoPorUsuario { get; set; } = null!;
         public DateTime FechaRegistroUtc { get; set; }
 
-        public string ModificadoPorUsuario { get; set; }
+        public string? ModificadoPorUsuario { get; set; }   // 🔥 nullable
         public DateTime? FechaModificacionUtc { get; set; }
-        public string ModificacionIp { get; set; }
+        public string? ModificacionIp { get; set; }         // 🔥 nullable
 
-        // Integración
-        public string ServicioOrigen { get; set; }
+        public string? ServicioOrigen { get; set; }         // 🔥 nullable
 
-        // Campos opcionales
         public DateTime? FechaInhabilitacionUtc { get; set; }
-        public string MotivoInhabilitacion { get; set; }
+        public string? MotivoInhabilitacion { get; set; }   // 🔥 nullable
 
         public byte[] RowVersion { get; set; }
 
         // 🔗 Relaciones
+        public virtual CiudadEntity? CiudadResidencia { get; set; }   // 🔥 nullable
+        public virtual PaisEntity? PaisNacionalidad { get; set; }     // 🔥 nullable
 
-        public virtual CiudadEntity CiudadResidencia { get; set; }
-        public virtual PaisEntity PaisNacionalidad { get; set; }
+        public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; } = new List<MetodoPagoEntity>();
+        public virtual ICollection<PasajeroEntity> Pasajeros { get; set; } = new List<PasajeroEntity>();
+        public virtual ICollection<ReservaEntity> Reservas { get; set; } = new List<ReservaEntity>();
 
-        public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; }
-        public virtual ICollection<PasajeroEntity> Pasajeros { get; set; }
-        public virtual ICollection<ReservaEntity> Reservas { get; set; }
-        public virtual ICollection<UsuarioAppEntity> UsuariosApp { get; set; }
+        public virtual ICollection<UsuarioAppEntity> UsuariosApp { get; set; } = new List<UsuarioAppEntity>();
     }
 }

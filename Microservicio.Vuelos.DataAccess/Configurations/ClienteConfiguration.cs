@@ -13,7 +13,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
         public void Configure(EntityTypeBuilder<ClienteEntity> builder)
         {
             // 🗂️ Tabla
-            builder.ToTable("CLIENTE", "crm");
+            builder.ToTable("CLIENTES", "crm");
 
             // 🔑 PK
             builder.HasKey(x => x.IdCliente);

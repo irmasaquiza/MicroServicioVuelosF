@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
-using System;
-using System.Collections.Generic;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -11,10 +7,10 @@ namespace Microservicio.Vuelos.DataAccess.Entities
     {
         public int IdTipoMetodo { get; set; }
 
-        public string NombreTipo { get; set; }   // VARCHAR(50)
-        public string? Descripcion { get; set; } // VARCHAR(150)
+        public string NombreTipo { get; set; } = null!;     // ✔ obligatorio
+        public string? Descripcion { get; set; }            // ✔ nullable
 
-        public string Estado { get; set; }       // ACTIVO / INACTIVO
+        public string Estado { get; set; } = null!;         // ✔ ACTIVO / INACTIVO
         public bool EsEliminado { get; set; }
 
         // 🔗 Relaciones

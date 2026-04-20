@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
-using System.Collections.Generic;
 using System.Linq;
 using Microservicio.Vuelos.DataAccess.Entities;
 using Microservicio.Vuelos.DataManagement.Models;
@@ -11,7 +8,9 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
 {
     public static class VueloDataMapper
     {
+        // ============================================================
         // 🔹 Entity → DataModel
+        // ============================================================
         public static VueloDataModel ToDataModel(VueloEntity entity)
         {
             if (entity == null) return null;
@@ -31,25 +30,18 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 DuracionMin = entity.DuracionMin,
 
                 EstadoVuelo = entity.EstadoVuelo,
-                TipoVuelo = entity.TipoVuelo,
 
                 CapacidadTotal = entity.CapacidadTotal,
-                CapacidadDisponible = entity.CapacidadDisponible,
 
                 PrecioBase = entity.PrecioBase,
-
-                Aerolinea = entity.Aerolinea,
-
-                NumeroGate = entity.NumeroGate,
-                Terminal = entity.Terminal,
-
-                Observaciones = entity.Observaciones,
 
                 Estado = entity.Estado
             };
         }
 
+        // ============================================================
         // 🔹 DataModel → Entity
+        // ============================================================
         public static VueloEntity ToEntity(VueloDataModel model)
         {
             if (model == null) return null;
@@ -69,25 +61,18 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 DuracionMin = model.DuracionMin,
 
                 EstadoVuelo = model.EstadoVuelo,
-                TipoVuelo = model.TipoVuelo,
 
                 CapacidadTotal = model.CapacidadTotal,
-                CapacidadDisponible = model.CapacidadDisponible,
 
                 PrecioBase = model.PrecioBase,
-
-                Aerolinea = model.Aerolinea,
-
-                NumeroGate = model.NumeroGate,
-                Terminal = model.Terminal,
-
-                Observaciones = model.Observaciones,
 
                 Estado = model.Estado
             };
         }
 
+        // ============================================================
         // 🔹 Update controlado
+        // ============================================================
         public static void UpdateEntity(VueloEntity entity, VueloDataModel model)
         {
             entity.CodigoVuelo = model.CodigoVuelo;
@@ -97,19 +82,10 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
             entity.DuracionMin = model.DuracionMin;
 
             entity.EstadoVuelo = model.EstadoVuelo;
-            entity.TipoVuelo = model.TipoVuelo;
 
             entity.CapacidadTotal = model.CapacidadTotal;
-            entity.CapacidadDisponible = model.CapacidadDisponible;
 
             entity.PrecioBase = model.PrecioBase;
-
-            entity.Aerolinea = model.Aerolinea;
-
-            entity.NumeroGate = model.NumeroGate;
-            entity.Terminal = model.Terminal;
-
-            entity.Observaciones = model.Observaciones;
 
             entity.Estado = model.Estado;
 
@@ -119,13 +95,17 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
             // IdAeropuertoDestino
         }
 
+        // ============================================================
         // 🔹 Lista Entity → DataModel
+        // ============================================================
         public static IEnumerable<VueloDataModel> ToDataModelList(IEnumerable<VueloEntity> entities)
         {
             return entities?.Select(ToDataModel).ToList();
         }
 
+        // ============================================================
         // 🔹 Lista DataModel → Entity
+        // ============================================================
         public static IEnumerable<VueloEntity> ToEntityList(IEnumerable<VueloDataModel> models)
         {
             return models?.Select(ToEntity).ToList();

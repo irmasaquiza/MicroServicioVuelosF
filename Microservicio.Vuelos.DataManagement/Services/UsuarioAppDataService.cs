@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Mappers;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.DataAccess.Entities; // 🔥 IMPORTANTE
 
 namespace Microservicio.Vuelos.DataManagement.Services
 {
@@ -52,6 +53,20 @@ namespace Microservicio.Vuelos.DataManagement.Services
                 return null;
 
             return UsuarioAppDataMapper.ToDataModel(entity);
+        }
+
+        public async Task<UsuarioAppEntity?> GetByCredentialsAsync(string login)
+        {
+            if (string.IsNullOrWhiteSpace(login))
+                throw new ArgumentException("Login requerido");
+
+            var input = login.Trim().ToLower();
+
+            var usuarios = await _uow.UsuarioAppRepository.GetAllAsync();
+
+            return usuarios.FirstOrDefault(u =>
+                (u.Username.ToLower() == input || u.Correo.ToLower() == input) &&
+                !u.EsEliminado);
         }
 
         // ─────────────────────────────────────────────

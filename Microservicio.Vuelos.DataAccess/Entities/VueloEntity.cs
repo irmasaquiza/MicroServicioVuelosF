@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -10,7 +9,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public byte[] RowVersion { get; set; }
 
-        public string CodigoVuelo { get; set; } // Ej: AV1234
+        public string CodigoVuelo { get; set; } = null!;
 
         public int IdAeropuertoOrigen { get; set; }
         public int IdAeropuertoDestino { get; set; }
@@ -20,39 +19,28 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public int DuracionMin { get; set; }
 
-        public string EstadoVuelo { get; set; } // PROGRAMADO, EN_CURSO, FINALIZADO, CANCELADO
-
-        public string TipoVuelo { get; set; } // NACIONAL, INTERNACIONAL
-
-        public int CapacidadTotal { get; set; }
-        public int CapacidadDisponible { get; set; }
-
+        // ⚠️ SOLO lo que EXISTE en tu BD
         public decimal PrecioBase { get; set; }
+        public int CapacidadTotal { get; set; }
 
-        public string Aerolinea { get; set; }
+        public string EstadoVuelo { get; set; } = null!;
 
-        public string NumeroGate { get; set; }
-        public string Terminal { get; set; }
-
-        public string Observaciones { get; set; }
-
-        public string Estado { get; set; }
+        public string Estado { get; set; } = null!;
         public bool EsEliminado { get; set; }
 
         public DateTime FechaRegistroUtc { get; set; }
-        public string CreadoPorUsuario { get; set; }
+        public string CreadoPorUsuario { get; set; } = null!;
 
-        public string ModificadoPorUsuario { get; set; }
+        public string? ModificadoPorUsuario { get; set; }
         public DateTime? FechaModificacionUtc { get; set; }
-        public string ModificacionIp { get; set; }
+        public string? ModificacionIp { get; set; }
 
-        // 🔗 Relaciones
+        // 🔗 Relaciones (nullable para evitar crashes)
+        public virtual AeropuertoEntity? AeropuertoOrigen { get; set; }
+        public virtual AeropuertoEntity? AeropuertoDestino { get; set; }
 
-        public virtual AeropuertoEntity AeropuertoOrigen { get; set; }
-        public virtual AeropuertoEntity AeropuertoDestino { get; set; }
-
-        public virtual ICollection<EscalaEntity> Escalas { get; set; }
-        public virtual ICollection<BoletoEntity> Boletos { get; set; }
-        public virtual ICollection<AsientoEntity> Asientos { get; set; }
+        public virtual ICollection<EscalaEntity> Escalas { get; set; } = new List<EscalaEntity>();
+        public virtual ICollection<BoletoEntity> Boletos { get; set; } = new List<BoletoEntity>();
+        public virtual ICollection<AsientoEntity> Asientos { get; set; } = new List<AsientoEntity>();
     }
 }

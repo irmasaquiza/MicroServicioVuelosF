@@ -12,7 +12,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
         public void Configure(EntityTypeBuilder<FacturaEntity> builder)
         {
             // 🗂️ Tabla
-            builder.ToTable("Factura", "ventas");
+            builder.ToTable("Facturas", "ventas");
 
             // 🔑 PK
             builder.HasKey(x => x.IdFactura);

@@ -1,13 +1,14 @@
 ﻿// ============================================================
 // CiudadDataService.cs
 // ============================================================
+using Microservicio.Vuelos.DataAccess.Entities;
+using Microservicio.Vuelos.DataManagement.Interfaces;
+using Microservicio.Vuelos.DataManagement.Mappers;
+using Microservicio.Vuelos.DataManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microservicio.Vuelos.DataManagement.Interfaces;
-using Microservicio.Vuelos.DataManagement.Mappers;
-using Microservicio.Vuelos.DataManagement.Models;
 
 namespace Microservicio.Vuelos.DataManagement.Services
 {
@@ -76,44 +77,50 @@ namespace Microservicio.Vuelos.DataManagement.Services
             CiudadFiltroDataModel filtro)
         {
             if (filtro == null)
-                throw new ArgumentNullException(
-                    nameof(filtro),
-                    "El filtro no puede ser nulo.");
+                throw new ArgumentNullException(nameof(filtro), "El filtro no puede ser nulo.");
 
-            // Asegurar paginación válida
+            // Paginación segura
             if (filtro.Page <= 0) filtro.Page = 1;
             if (filtro.PageSize <= 0) filtro.PageSize = 20;
 
-            // Traer todos los no eliminados
             var todos = await _uow.CiudadRepository.GetAllAsync();
 
-            // ── Aplicar filtros en memoria ──────────────────
-            var query = todos.AsQueryable();
+            // 🔥 FILTRAR ELIMINADOS + evitar null list
+            var query = (todos ?? new List<CiudadEntity>())
+                .Where(c => !c.Eliminado)
+                .AsQueryable();
+
+            // ─────────────────────────────
+            // FILTROS SEGUROS
+            // ─────────────────────────────
 
             if (filtro.IdPais.HasValue)
                 query = query.Where(c => c.IdPais == filtro.IdPais.Value);
 
             if (!string.IsNullOrWhiteSpace(filtro.Nombre))
                 query = query.Where(c =>
+                    c.Nombre != null &&
                     c.Nombre.ToUpper().Contains(filtro.Nombre.ToUpper()));
 
             if (!string.IsNullOrWhiteSpace(filtro.CodigoPostal))
                 query = query.Where(c =>
                     c.CodigoPostal != null &&
-                    c.CodigoPostal.ToUpper()
-                     .Contains(filtro.CodigoPostal.ToUpper()));
+                    c.CodigoPostal.ToUpper().Contains(filtro.CodigoPostal.ToUpper()));
 
             if (!string.IsNullOrWhiteSpace(filtro.ZonaHoraria))
                 query = query.Where(c =>
                     c.ZonaHoraria != null &&
-                    c.ZonaHoraria.ToUpper()
-                     .Contains(filtro.ZonaHoraria.ToUpper()));
+                    c.ZonaHoraria.ToUpper().Contains(filtro.ZonaHoraria.ToUpper()));
 
             if (!string.IsNullOrWhiteSpace(filtro.Estado))
                 query = query.Where(c =>
+                    c.Estado != null &&
                     c.Estado.ToUpper() == filtro.Estado.ToUpper());
 
-            // ── Filtros geográficos opcionales ──────────────
+            // ─────────────────────────────
+            // FILTROS GEO
+            // ─────────────────────────────
+
             if (filtro.LatitudMin.HasValue)
                 query = query.Where(c =>
                     c.Latitud.HasValue &&
@@ -134,10 +141,16 @@ namespace Microservicio.Vuelos.DataManagement.Services
                     c.Longitud.HasValue &&
                     c.Longitud.Value <= filtro.LongitudMax.Value);
 
-            // Ordenar por nombre
-            query = query.OrderBy(c => c.Nombre);
+            // ─────────────────────────────
+            // ORDENAMIENTO SEGURO
+            // ─────────────────────────────
 
-            // ── Paginación ──────────────────────────────────
+            query = query.OrderBy(c => c.Nombre ?? "");
+
+            // ─────────────────────────────
+            // PAGINACIÓN
+            // ─────────────────────────────
+
             var total = query.Count();
             var totalPages = (int)Math.Ceiling(total / (double)filtro.PageSize);
 
@@ -159,7 +172,6 @@ namespace Microservicio.Vuelos.DataManagement.Services
                 }
             };
         }
-
         // ─────────────────────────────────────────────
         // CREATE
         // ─────────────────────────────────────────────

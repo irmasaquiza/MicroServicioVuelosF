@@ -27,11 +27,18 @@ namespace Microservicio.Vuelos.Business.Services
             _asientoDataService = asientoDataService;
         }
 
+        // ============================================================
+        // CREATE
+        // ============================================================
         public async Task<VueloResponse> CrearAsync(CrearVueloRequest request)
         {
             VueloValidator.ValidarCrear(request);
 
-            var existente = await _vueloDataService.GetByCodigoAsync(request.NumeroVuelo);
+            var todos = await _vueloDataService.GetAllAsync();
+
+            var existente = todos.FirstOrDefault(v =>
+                v.CodigoVuelo == request.NumeroVuelo);
+
             if (existente != null)
                 throw new BusinessException(
                     "VUELO_DUPLICADO",
@@ -43,6 +50,9 @@ namespace Microservicio.Vuelos.Business.Services
             return VueloBusinessMapper.ToResponse(creado);
         }
 
+        // ============================================================
+        // GET BY ID
+        // ============================================================
         public async Task<VueloResponse> GetByIdAsync(int id)
         {
             var model = await _vueloDataService.GetByIdAsync(id);
@@ -52,6 +62,9 @@ namespace Microservicio.Vuelos.Business.Services
             return VueloBusinessMapper.ToResponse(model);
         }
 
+        // ============================================================
+        // DETALLE
+        // ============================================================
         public async Task<VueloDetalleResponse> GetDetalleAsync(int id)
         {
             var model = await _vueloDataService.GetByIdAsync(id);
@@ -68,12 +81,18 @@ namespace Microservicio.Vuelos.Business.Services
             );
         }
 
+        // ============================================================
+        // GET ALL
+        // ============================================================
         public async Task<IEnumerable<VueloResponse>> GetAllAsync()
         {
             var todos = await _vueloDataService.GetAllAsync();
             return todos.Select(VueloBusinessMapper.ToResponse);
         }
 
+        // ============================================================
+        // FILTRO
+        // ============================================================
         public async Task<IEnumerable<VueloResponse>> FiltrarAsync(VueloFiltroRequest request)
         {
             var filtro = new VueloFiltroDataModel
@@ -86,7 +105,6 @@ namespace Microservicio.Vuelos.Business.Services
                 FechaSalidaFin = request.FechaSalidaFin,
                 PrecioMin = request.PrecioMin,
                 PrecioMax = request.PrecioMax,
-                CapacidadDisponibleMin = request.CapacidadDisponibleMin,
                 Page = request.Page,
                 PageSize = request.PageSize
             };
@@ -95,6 +113,9 @@ namespace Microservicio.Vuelos.Business.Services
             return resultado.Data.Select(VueloBusinessMapper.ToResponse);
         }
 
+        // ============================================================
+        // UPDATE
+        // ============================================================
         public async Task<VueloResponse> ActualizarAsync(int id, ActualizarVueloRequest request)
         {
             VueloValidator.ValidarActualizar(request);
@@ -110,14 +131,19 @@ namespace Microservicio.Vuelos.Business.Services
 
             if (!string.IsNullOrWhiteSpace(request.NumeroVuelo))
                 model.CodigoVuelo = request.NumeroVuelo.ToUpper();
+
             if (request.FechaHoraSalida.HasValue)
                 model.FechaHoraSalida = request.FechaHoraSalida.Value;
+
             if (request.FechaHoraLlegada.HasValue)
                 model.FechaHoraLlegada = request.FechaHoraLlegada.Value;
+
             if (request.DuracionMin.HasValue)
                 model.DuracionMin = request.DuracionMin.Value;
+
             if (request.PrecioBase.HasValue)
                 model.PrecioBase = request.PrecioBase.Value;
+
             if (request.CapacidadTotal.HasValue)
                 model.CapacidadTotal = request.CapacidadTotal.Value;
 
@@ -126,6 +152,9 @@ namespace Microservicio.Vuelos.Business.Services
             return VueloBusinessMapper.ToResponse(model);
         }
 
+        // ============================================================
+        // CAMBIAR ESTADO
+        // ============================================================
         public async Task<bool> CambiarEstadoAsync(int id, ActualizarEstadoVueloRequest request)
         {
             VueloValidator.ValidarEstado(request);
@@ -135,15 +164,21 @@ namespace Microservicio.Vuelos.Business.Services
                 throw new NotFoundException("Vuelo", id);
 
             if (model.EstadoVuelo == "CANCELADO")
-                throw new BusinessException("VUELO_YA_CANCELADO",
+                throw new BusinessException(
+                    "VUELO_YA_CANCELADO",
                     "El vuelo ya se encuentra cancelado.");
 
             if (model.EstadoVuelo == "ATERRIZADO" && request.EstadoVuelo == "CANCELADO")
-                throw new BusinessException("VUELO_ATERRIZADO",
+                throw new BusinessException(
+                    "VUELO_ATERRIZADO",
                     "No se puede cancelar un vuelo que ya aterrizó.");
 
+            // 🔥 AQUÍ ESTÁ EL FIX
             if (request.EstadoVuelo == "CANCELADO")
-                await _vueloDataService.CancelAsync(id, request.Motivo);
+            {
+                model.EstadoVuelo = "CANCELADO";
+                await _vueloDataService.UpdateAsync(model);
+            }
             else
             {
                 model.EstadoVuelo = request.EstadoVuelo.ToUpper();
@@ -153,20 +188,9 @@ namespace Microservicio.Vuelos.Business.Services
             return true;
         }
 
-        public async Task<bool> ActualizarDisponibilidadAsync(int id, int cantidad)
-        {
-            var model = await _vueloDataService.GetByIdAsync(id);
-            if (model == null)
-                throw new NotFoundException("Vuelo", id);
-
-            model.CapacidadDisponible += cantidad;
-            if (model.CapacidadDisponible < 0)
-                model.CapacidadDisponible = 0;
-
-            await _vueloDataService.UpdateAsync(model);
-            return true;
-        }
-
+        // ============================================================
+        // DELETE
+        // ============================================================
         public async Task<bool> EliminarAsync(int id)
         {
             var model = await _vueloDataService.GetByIdAsync(id);
@@ -174,8 +198,9 @@ namespace Microservicio.Vuelos.Business.Services
                 throw new NotFoundException("Vuelo", id);
 
             if (model.EstadoVuelo == "EN_VUELO")
-                throw new BusinessException("VUELO_EN_CURSO",
-                    "No se puede eliminar un vuelo que está en curso.");
+                throw new BusinessException(
+                    "VUELO_EN_CURSO",
+                    "No se puede eliminar un vuelo en curso.");
 
             await _vueloDataService.DeleteAsync(id);
 

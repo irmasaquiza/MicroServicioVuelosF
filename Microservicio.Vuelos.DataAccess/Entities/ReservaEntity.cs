@@ -10,7 +10,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public Guid GuidReserva { get; set; }
 
-        public string CodigoReserva { get; set; }
+        public string CodigoReserva { get; set; } = null!;
 
         // 🔗 Relaciones
         public int IdCliente { get; set; }
@@ -32,9 +32,9 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public decimal TotalReserva { get; set; }
 
         // ⚙️ Estado
-        public string EstadoReserva { get; set; } // PEN, CON, CAN, etc.
+        public string EstadoReserva { get; set; } = null!;
 
-        public string OrigenCanalReserva { get; set; }
+        public string? OrigenCanalReserva { get; set; }   // 🔥 nullable
 
         public string? MotivoCancelacion { get; set; }
 
@@ -45,7 +45,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public string? Observaciones { get; set; }
 
         // 🔌 Integración
-        public string ServicioOrigen { get; set; }
+        public string? ServicioOrigen { get; set; }       // 🔥 nullable
 
         // ⚠️ Inhabilitación
         public DateTime? FechaInhabilitacionUtc { get; set; }
@@ -54,7 +54,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         // 🧾 Auditoría
         public bool EsEliminado { get; set; }
 
-        public string CreadoPorUsuario { get; set; }
+        public string CreadoPorUsuario { get; set; } = null!;
         public DateTime FechaRegistroUtc { get; set; }
 
         public string? ModificadoPorUsuario { get; set; }
@@ -64,8 +64,8 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public byte[] RowVersion { get; set; }
 
         // 🔗 Navigation
-        public virtual ClienteEntity Cliente { get; set; }
-        public virtual PasajeroEntity Pasajero { get; set; }
+        public virtual ClienteEntity? Cliente { get; set; }     // 🔥 nullable
+        public virtual PasajeroEntity? Pasajero { get; set; }   // 🔥 nullable
 
         public virtual ICollection<BoletoEntity> Boletos { get; set; } = new List<BoletoEntity>();
         public virtual ICollection<FacturaEntity> Facturas { get; set; } = new List<FacturaEntity>();

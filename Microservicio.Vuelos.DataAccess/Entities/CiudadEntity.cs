@@ -12,23 +12,23 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public int IdPais { get; set; }
 
-        public string Nombre { get; set; }
-        public string CodigoPostal { get; set; }
+        public string? Nombre { get; set; }
+        public string? CodigoPostal { get; set; }
 
-        public string ZonaHoraria { get; set; }
+        public string? ZonaHoraria { get; set; }
 
         public decimal? Latitud { get; set; }
         public decimal? Longitud { get; set; }
 
-        public string Estado { get; set; }
+        public string? Estado { get; set; }
         public bool Eliminado { get; set; }
 
         public DateTime FechaRegistroUtc { get; set; }
         public string CreadoPorUsuario { get; set; }
 
-        public string ModificadoPorUsuario { get; set; }
+        public string? ModificadoPorUsuario { get; set; }
         public DateTime? FechaModificacionUtc { get; set; }
-        public string ModificacionIp { get; set; }
+        public string? ModificacionIp { get; set; }
 
         // 🔗 Relaciones
 
