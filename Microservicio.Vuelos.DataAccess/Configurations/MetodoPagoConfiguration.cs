@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microservicio.Vuelos.DataAccess.Entities;
 
@@ -35,7 +31,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .IsRequired()
                    .HasColumnName("id_tipo_metodo");
 
-            // 💳 Datos del método
+            // 💳 Datos
             builder.Property(x => x.Ultimos4)
                    .HasColumnType("char(4)")
                    .HasColumnName("ultimos4");
@@ -119,21 +115,25 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasMaxLength(45)
                    .HasColumnName("modificacion_ip");
 
-            // 🔗 Relaciones
+            // ============================================================
+            // 🔗 RELACIONES (🔥 AQUÍ ESTABA EL BUG)
+            // ============================================================
 
             builder.HasOne(x => x.Cliente)
-                   .WithMany()
+                   .WithMany(c => c.MetodosPago)
                    .HasForeignKey(x => x.IdCliente);
 
             builder.HasOne(x => x.TipoMetodoPago)
-                   .WithMany()
+                   .WithMany(t => t.MetodosPago)
                    .HasForeignKey(x => x.IdTipoMetodo);
 
+            // 🔥 RELACIÓN CORRECTA CON FACTURA
             builder.HasMany(x => x.Facturas)
-                   .WithOne()
-                   .HasForeignKey("id_metodo"); // ⚠️ solo si tu Factura usa este FK
+                   .WithOne(f => f.MetodoPago)
+                   .HasForeignKey(f => f.IdMetodo);
 
-            // ⚡ CHECK constraint
+            // ============================================================
+
             builder.HasCheckConstraint(
                 "CHK_MetodoPago_Estado",
                 "estado IN ('ACTIVO','EXPIRADO','BLOQUEADO')"

@@ -23,54 +23,62 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         }
 
         // ============================================================
-        // GET: api/v1/facturas
+        // GET ALL
         // ============================================================
         [HttpGet]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<FacturaResponse>>), 200)]
         public async Task<IActionResult> GetAll([FromQuery] FacturaFiltroRequest filtro)
         {
             try
             {
                 var result = await _facturaService.FiltrarAsync(filtro);
-
                 return Ok(ApiResponse<IEnumerable<FacturaResponse>>.Ok(result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // GET: api/v1/facturas/{id}
+        // GET BY ID
         // ============================================================
         [HttpGet("{id_factura:int}")]
-        [ProducesResponseType(typeof(ApiResponse<FacturaResponse>), 200)]
         public async Task<IActionResult> GetById(int id_factura)
         {
             try
             {
                 var result = await _facturaService.GetByIdAsync(id_factura);
-
                 return Ok(ApiResponse<FacturaResponse>.Ok(result));
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // POST: api/v1/facturas
+        // CREATE
         // ============================================================
         [HttpPost]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<FacturaResponse>), 201)]
         public async Task<IActionResult> Crear([FromBody] CrearFacturaRequest request)
         {
             try
@@ -83,24 +91,34 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    error = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return UnprocessableEntity(ApiErrorResponse.FromBusiness(ex));
+                return UnprocessableEntity(new
+                {
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // PATCH: api/v1/facturas/{id}/anular
+        // ANULAR
         // ============================================================
         [HttpPatch("{id_factura:int}/anular")]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(204)]
         public async Task<IActionResult> Anular(int id_factura)
         {
             try
@@ -111,15 +129,26 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    error = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return UnprocessableEntity(ApiErrorResponse.FromBusiness(ex));
+                return UnprocessableEntity(new
+                {
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
     }
