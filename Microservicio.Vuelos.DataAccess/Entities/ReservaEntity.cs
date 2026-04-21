@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -12,7 +11,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public string CodigoReserva { get; set; } = null!;
 
-        // 🔗 Relaciones
+        // 🔗 Relaciones (FKs)
         public int IdCliente { get; set; }
         public int IdPasajero { get; set; }
         public int IdVuelo { get; set; }
@@ -33,19 +32,17 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         // ⚙️ Estado
         public string EstadoReserva { get; set; } = null!;
-
-        public string? OrigenCanalReserva { get; set; }   // 🔥 nullable
+        public string OrigenCanalReserva { get; set; } = null!;
 
         public string? MotivoCancelacion { get; set; }
 
         // 📞 Contacto
         public string? ContactoEmail { get; set; }
         public string? ContactoTelefono { get; set; }
-
         public string? Observaciones { get; set; }
 
         // 🔌 Integración
-        public string? ServicioOrigen { get; set; }       // 🔥 nullable
+        public string ServicioOrigen { get; set; } = null!;
 
         // ⚠️ Inhabilitación
         public DateTime? FechaInhabilitacionUtc { get; set; }
@@ -63,9 +60,14 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public byte[] RowVersion { get; set; }
 
-        // 🔗 Navigation
-        public virtual ClienteEntity? Cliente { get; set; }     // 🔥 nullable
-        public virtual PasajeroEntity? Pasajero { get; set; }   // 🔥 nullable
+        // ============================================================
+        // 🔥 NAVIGATION PROPERTIES
+        // ============================================================
+
+        public virtual ClienteEntity? Cliente { get; set; }
+        public virtual PasajeroEntity? Pasajero { get; set; }
+        public virtual VueloEntity? Vuelo { get; set; }
+        public virtual AsientoEntity? Asiento { get; set; }
 
         public virtual ICollection<BoletoEntity> Boletos { get; set; } = new List<BoletoEntity>();
         public virtual ICollection<FacturaEntity> Facturas { get; set; } = new List<FacturaEntity>();

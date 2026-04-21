@@ -23,10 +23,9 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         }
 
         // ============================================================
-        // GET: api/v1/clientes/{id_cliente}/metodos-pago
+        // GET
         // ============================================================
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<MetodoPagoResponse>>), 200)]
         public async Task<IActionResult> GetByCliente(int id_cliente)
         {
             try
@@ -41,15 +40,14 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
 
         // ============================================================
-        // POST: api/v1/clientes/{id_cliente}/metodos-pago
+        // POST
         // ============================================================
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<MetodoPagoResponse>), 201)]
         public async Task<IActionResult> Crear(
             int id_cliente,
             [FromBody] CrearMetodoPagoRequest request)
@@ -78,15 +76,14 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
 
         // ============================================================
-        // DELETE: api/v1/clientes/{id_cliente}/metodos-pago/{id_metodo}
+        // DELETE
         // ============================================================
         [HttpDelete("{id_metodo:int}")]
-        [ProducesResponseType(204)]
         public async Task<IActionResult> Eliminar(int id_cliente, int id_metodo)
         {
             try
@@ -101,7 +98,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
     }

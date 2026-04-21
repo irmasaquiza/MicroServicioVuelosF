@@ -47,6 +47,10 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 Username = model.Username,
                 Correo = model.Correo,
 
+                // 🔥 ESTE ES EL FIX REAL
+                PasswordHash = model.PasswordHash,
+                PasswordSalt = "NO SALT",
+
                 FechaUltimoLogin = model.FechaUltimoLogin,
 
                 EstadoUsuario = model.EstadoUsuario,

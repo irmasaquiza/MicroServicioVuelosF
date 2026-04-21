@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microservicio.Vuelos.DataAccess.Entities;
 using Microservicio.Vuelos.DataManagement.Models;
@@ -21,6 +17,9 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 IdMetodo = entity.IdMetodo,
                 IdCliente = entity.IdCliente,
                 IdTipoMetodo = entity.IdTipoMetodo,
+
+                // 🔥 FIX
+                TokenPasarela = entity.TokenPasarela,
 
                 Ultimos4 = entity.Ultimos4,
                 ReferenciaVisible = entity.ReferenciaVisible,
@@ -52,6 +51,9 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 IdCliente = model.IdCliente,
                 IdTipoMetodo = model.IdTipoMetodo,
 
+                // 🔥 FIX CRÍTICO
+                TokenPasarela = model.TokenPasarela,
+
                 Ultimos4 = model.Ultimos4,
                 ReferenciaVisible = model.ReferenciaVisible,
 
@@ -67,7 +69,7 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
 
                 FechaUltimoUso = model.FechaUltimoUso,
 
-                Estado = model.Estado
+                Estado = model.Estado ?? "ACTIVO"
             };
         }
 
@@ -89,21 +91,18 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
 
             entity.FechaUltimoUso = model.FechaUltimoUso;
 
-            entity.Estado = model.Estado;
+            entity.Estado = model.Estado ?? entity.Estado;
 
-            // ❗ NO tocar:
-            // IdCliente
-            // IdTipoMetodo
-            // TokenPasarela (seguridad)
+            // 🔥 IMPORTANTE
+            if (!string.IsNullOrWhiteSpace(model.TokenPasarela))
+                entity.TokenPasarela = model.TokenPasarela;
         }
 
-        // 🔹 Lista Entity → DataModel
         public static IEnumerable<MetodoPagoDataModel> ToDataModelList(IEnumerable<MetodoPagoEntity> entities)
         {
             return entities?.Select(ToDataModel).ToList();
         }
 
-        // 🔹 Lista DataModel → Entity
         public static IEnumerable<MetodoPagoEntity> ToEntityList(IEnumerable<MetodoPagoDataModel> models)
         {
             return models?.Select(ToEntity).ToList();

@@ -27,7 +27,6 @@ namespace Microservicio.Vuelos.DataManagement.Models
 
         // 🪑 Capacidad
         public int CapacidadTotal { get; set; }
-        public int CapacidadDisponible { get; set; }
 
         // 💰 Precio
         public decimal PrecioBase { get; set; }

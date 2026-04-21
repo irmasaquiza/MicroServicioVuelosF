@@ -343,7 +343,7 @@ namespace Microservicio.Vuelos.DataManagement.Services
                     : model.OrigenCanalReserva.ToUpper();
 
             // Marcar asiento como no disponible
-            asiento.Disponible = false;
+            asiento.Disponible = true;
             _uow.AsientoRepository.Update(asiento);
 
             await _uow.ReservaRepository.AddAsync(entity);

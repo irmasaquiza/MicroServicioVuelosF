@@ -26,18 +26,16 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // GET: api/v1/reservas
         // ============================================================
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReservaResponse>>), 200)]
         public async Task<IActionResult> GetAll([FromQuery] ReservaFiltroRequest filtro)
         {
             try
             {
                 var result = await _reservaService.FiltrarAsync(filtro);
-
                 return Ok(ApiResponse<IEnumerable<ReservaResponse>>.Ok(result));
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
 
@@ -45,13 +43,11 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // GET: api/v1/reservas/{id}
         // ============================================================
         [HttpGet("{id_reserva:int}")]
-        [ProducesResponseType(typeof(ApiResponse<ReservaDetalleResponse>), 200)]
         public async Task<IActionResult> GetById(int id_reserva)
         {
             try
             {
                 var result = await _reservaService.GetDetalleAsync(id_reserva);
-
                 return Ok(ApiResponse<ReservaDetalleResponse>.Ok(result));
             }
             catch (NotFoundException ex)
@@ -60,7 +56,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
 
@@ -68,7 +64,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // POST: api/v1/reservas
         // ============================================================
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<ReservaResponse>), 201)]
         public async Task<IActionResult> Crear([FromBody] CrearReservaRequest request)
         {
             try
@@ -89,7 +84,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
 
@@ -97,7 +92,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // PATCH: api/v1/reservas/{id}/estado
         // ============================================================
         [HttpPatch("{id_reserva:int}/estado")]
-        [ProducesResponseType(204)]
         public async Task<IActionResult> CambiarEstado(
             int id_reserva,
             [FromBody] ActualizarEstadoReservaRequest request)
@@ -105,7 +99,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             try
             {
                 await _reservaService.CambiarEstadoAsync(id_reserva, request);
-
                 return NoContent();
             }
             catch (ValidationException ex)
@@ -122,7 +115,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 MUESTRA ERROR REAL
             }
         }
     }

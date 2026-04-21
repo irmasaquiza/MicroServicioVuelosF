@@ -23,7 +23,7 @@ namespace Microservicio.Vuelos.Business.Mappers
                 IdAeropuertoOrigen = request.IdAeropuertoOrigen,
                 IdAeropuertoDestino = request.IdAeropuertoDestino,
 
-                // 🔥 MAPEO CORRECTO
+                // 🔥 BD usa numero_vuelo → en model es CodigoVuelo
                 CodigoVuelo = request.NumeroVuelo?.ToUpper(),
 
                 FechaHoraSalida = request.FechaHoraSalida,
@@ -32,8 +32,7 @@ namespace Microservicio.Vuelos.Business.Mappers
                 PrecioBase = request.PrecioBase,
                 CapacidadTotal = request.CapacidadTotal,
 
-                // 💀 defaults
-                CapacidadDisponible = request.CapacidadTotal,
+                // ⚠️ SIN CapacidadDisponible (no existe en BD)
                 EstadoVuelo = "PROGRAMADO",
                 Estado = "ACTIVO"
             };
@@ -103,7 +102,8 @@ namespace Microservicio.Vuelos.Business.Mappers
                 DuracionMin = model.DuracionMin,
                 PrecioBase = model.PrecioBase,
                 CapacidadTotal = model.CapacidadTotal,
-                CapacidadDisponible = model.CapacidadDisponible,
+
+                // ⚠️ SIN CapacidadDisponible
                 EstadoVuelo = model.EstadoVuelo,
                 Estado = model.Estado
             };
@@ -130,7 +130,8 @@ namespace Microservicio.Vuelos.Business.Mappers
                 DuracionMin = model.DuracionMin,
                 PrecioBase = model.PrecioBase,
                 CapacidadTotal = model.CapacidadTotal,
-                CapacidadDisponible = model.CapacidadDisponible,
+
+                // ⚠️ SIN CapacidadDisponible
                 EstadoVuelo = model.EstadoVuelo,
                 Estado = model.Estado,
 

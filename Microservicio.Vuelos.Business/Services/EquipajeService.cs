@@ -1,7 +1,4 @@
-﻿
-// ============================================================
-// Services/EquipajeService.cs
-// ============================================================
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,6 +40,16 @@ namespace Microservicio.Vuelos.Business.Services
                     "No se puede registrar equipaje en un boleto cancelado.");
 
             var dataModel = EquipajeBusinessMapper.ToDataModel(request);
+
+            // ============================================================
+            // 🔥 FIX CRÍTICO: GENERAR NUM_ETIQUETA
+            // ============================================================
+            dataModel.NumeroEtiqueta = $"EQ-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+            // (opcional) estado inicial
+            if (string.IsNullOrWhiteSpace(dataModel.EstadoEquipaje))
+                dataModel.EstadoEquipaje = "REGISTRADO";
+
             var creado = await _equipajeDataService.CreateAsync(dataModel);
 
             return EquipajeBusinessMapper.ToResponse(creado);
@@ -78,10 +85,11 @@ namespace Microservicio.Vuelos.Business.Services
 
             if (model.EstadoEquipaje == "ENTREGADO")
                 throw new BusinessException("EQUIPAJE_ENTREGADO",
-                    "No se puede modificar el estado de un equipaje ya entregado.");
+                    "No se puede modificar un equipaje ya entregado.");
 
             model.EstadoEquipaje = estado.ToUpper();
             await _equipajeDataService.UpdateAsync(model);
+
             return true;
         }
 
@@ -94,7 +102,7 @@ namespace Microservicio.Vuelos.Business.Services
             if (model.EstadoEquipaje == "EMBARCADO" ||
                 model.EstadoEquipaje == "EN_TRANSITO")
                 throw new BusinessException("EQUIPAJE_EN_TRANSITO",
-                    "No se puede eliminar un equipaje que está en tránsito.");
+                    "No se puede eliminar un equipaje en tránsito.");
 
             await _equipajeDataService.DeleteAsync(id);
             return true;

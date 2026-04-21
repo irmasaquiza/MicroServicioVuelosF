@@ -18,7 +18,7 @@ namespace Microservicio.Vuelos.DataManagement.Models
         // 👤 Datos
         public string Username { get; set; }
         public string Correo { get; set; }
-        public string Password { get; set; }  // ✅ AGREGAR ESTO
+        public string PasswordHash { get; set; }  // ✅ AGREGAR ESTO
 
 
         public DateTime? FechaUltimoLogin { get; set; }

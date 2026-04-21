@@ -16,22 +16,23 @@ namespace Microservicio.Vuelos.Business.Mappers
         // ============================================================
         // 🔄 Crear → DataModel
         // ============================================================
-        public static UsuarioAppDataModel ToDataModel(CrearUsuarioAppRequest request)
-        {
-            if (request == null) return null;
+public static UsuarioAppDataModel ToDataModel(CrearUsuarioAppRequest request)
+{
+    if (request == null) return null;
 
-            return new UsuarioAppDataModel
-            {
-                IdCliente = request.IdCliente,
-                Username = request.Username,
-                Correo = request.Correo,
+    return new UsuarioAppDataModel
+    {
+        IdCliente = request.IdCliente,
+        Username = request.Username,
+        Correo = request.Correo,
 
-                // ❌ SIN PASSWORD
+        // 🔥 AQUÍ ESTABA EL PROBLEMA
+        PasswordHash = request.Password,
 
-                EstadoUsuario = "ACT",
-                Activo = true
-            };
-        }
+        EstadoUsuario = "ACT",
+        Activo = true
+    };
+}
 
 
         // ============================================================

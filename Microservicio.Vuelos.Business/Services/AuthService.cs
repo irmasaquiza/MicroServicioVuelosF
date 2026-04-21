@@ -133,7 +133,7 @@ namespace Microservicio.Vuelos.Business.Services
                 expires: expira,
                 signingCredentials: credentials);
 
-            return (new JwtSecurityTokenHandler().WriteToken(token), expira);
+            return (new JwtSecurityTokenHandler().WriteToken(token), expira);   
         }
     }
 }

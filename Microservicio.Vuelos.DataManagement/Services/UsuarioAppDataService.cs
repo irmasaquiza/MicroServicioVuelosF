@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Mappers;
@@ -257,16 +255,11 @@ namespace Microservicio.Vuelos.DataManagement.Services
 
             var entity = UsuarioAppDataMapper.ToEntity(model);
 
-            // Generar salt y hash de contraseña temporal
-            var (hash, salt) = GenerarPasswordHash(model.Username + DateTime.UtcNow);
-
             entity.UsuarioGuid = Guid.NewGuid();
             entity.FechaRegistroUtc = DateTime.UtcNow;
             entity.CreadoPorUsuario = "SYSTEM";
             entity.EsEliminado = false;
             entity.Activo = true;
-            entity.PasswordHash = hash;
-            entity.PasswordSalt = salt;
             entity.Correo = model.Correo.Trim().ToLower();
             entity.Username = model.Username.Trim();
 
@@ -366,22 +359,6 @@ namespace Microservicio.Vuelos.DataManagement.Services
             await _uow.SaveChangesAsync();
 
             return true;
-        }
-
-        // ─────────────────────────────────────────────
-        // PRIVADO — Generar hash y salt de contraseña
-        // ─────────────────────────────────────────────
-        private static (string hash, string salt) GenerarPasswordHash(string input)
-        {
-            var saltBytes = RandomNumberGenerator.GetBytes(32);
-            var saltStr = Convert.ToBase64String(saltBytes);
-
-            using var sha256 = SHA256.Create();
-            var combined = Encoding.UTF8.GetBytes(input + saltStr);
-            var hashBytes = sha256.ComputeHash(combined);
-            var hashStr = Convert.ToBase64String(hashBytes);
-
-            return (hashStr, saltStr);
         }
     }
 }

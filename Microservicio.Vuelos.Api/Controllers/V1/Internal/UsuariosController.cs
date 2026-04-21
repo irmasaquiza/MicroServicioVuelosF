@@ -32,7 +32,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // GET: api/v1/usuarios
         // ============================================================
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<UsuarioAppResponse>>), 200)]
         public async Task<IActionResult> GetAll([FromQuery] UsuarioAppFiltroRequest filtro)
         {
             try
@@ -41,9 +40,16 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
 
                 return Ok(ApiResponse<IEnumerable<UsuarioAppResponse>>.Ok(result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
@@ -51,7 +57,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // POST: api/v1/usuarios
         // ============================================================
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<UsuarioAppResponse>), 201)]
         public async Task<IActionResult> Crear([FromBody] CrearUsuarioAppRequest request)
         {
             try
@@ -64,15 +69,33 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    success = false,
+                    tipo = "VALIDATION_ERROR",
+                    mensaje = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return Conflict(ApiErrorResponse.FromBusiness(ex));
+                return Conflict(new
+                {
+                    success = false,
+                    tipo = "BUSINESS_ERROR",
+                    mensaje = ex.Message,
+                    codigo = ex.CodigoError
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
@@ -80,7 +103,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // GET: api/v1/usuarios/{id}/roles
         // ============================================================
         [HttpGet("{id_usuario:int}/roles")]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<UsuarioRolResponse>>), 200)]
         public async Task<IActionResult> GetRoles(int id_usuario)
         {
             try
@@ -91,11 +113,23 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    success = false,
+                    tipo = "NOT_FOUND",
+                    mensaje = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
@@ -103,7 +137,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // POST: api/v1/usuarios/{id}/roles
         // ============================================================
         [HttpPost("{id_usuario:int}/roles")]
-        [ProducesResponseType(typeof(ApiResponse<UsuarioRolResponse>), 201)]
         public async Task<IActionResult> AsignarRol(
             int id_usuario,
             [FromBody] CrearUsuarioRolRequest request)
@@ -118,19 +151,41 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    success = false,
+                    tipo = "VALIDATION_ERROR",
+                    mensaje = ex.Message
+                });
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    success = false,
+                    tipo = "NOT_FOUND",
+                    mensaje = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return Conflict(ApiErrorResponse.FromBusiness(ex));
+                return Conflict(new
+                {
+                    success = false,
+                    tipo = "BUSINESS_ERROR",
+                    mensaje = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
@@ -138,7 +193,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // DELETE: api/v1/usuarios/{id}/roles/{id_rol}
         // ============================================================
         [HttpDelete("{id_usuario:int}/roles/{id_rol:int}")]
-        [ProducesResponseType(204)]
         public async Task<IActionResult> QuitarRol(int id_usuario, int id_rol)
         {
             try
@@ -148,21 +202,27 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
                 var ur = roles.FirstOrDefault(r => r.IdRol == id_rol);
 
                 if (ur == null)
-                    return NotFound(ApiErrorResponse.Fail(
-                        "USUARIOROL_NO_ENCONTRADO",
-                        $"El usuario {id_usuario} no tiene asignado el rol {id_rol}."));
+                    return NotFound(new
+                    {
+                        success = false,
+                        tipo = "NOT_FOUND",
+                        mensaje = $"El usuario {id_usuario} no tiene el rol {id_rol}"
+                    });
 
                 await _usuarioRolService.EliminarAsync(ur.IdUsuarioRol);
 
                 return NoContent();
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
     }
