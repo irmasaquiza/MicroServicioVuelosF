@@ -23,10 +23,9 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         }
 
         // ============================================================
-        // GET: api/v1/aeropuertos
+        // GET ALL
         // ============================================================
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AeropuertoResponse>>), 200)]
         public async Task<IActionResult> GetAll([FromQuery] AeropuertoFiltroRequest filtro)
         {
             try
@@ -35,18 +34,23 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
 
                 return Ok(ApiResponse<IEnumerable<AeropuertoResponse>>.Ok(result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // GET: api/v1/aeropuertos/{id}
+        // GET BY ID
         // ============================================================
         [HttpGet("{id_aeropuerto:int}")]
-        [ProducesResponseType(typeof(ApiResponse<AeropuertoResponse>), 200)]
-        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetById(int id_aeropuerto)
         {
             try
@@ -57,20 +61,30 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // POST: api/v1/aeropuertos
+        // CREATE
         // ============================================================
         [HttpPost]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<AeropuertoResponse>), 201)]
         public async Task<IActionResult> Crear([FromBody] CrearAeropuertoRequest request)
         {
             try
@@ -83,24 +97,38 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return Conflict(ApiErrorResponse.FromBusiness(ex));
+                return Conflict(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // PUT: api/v1/aeropuertos/{id}
+        // UPDATE
         // ============================================================
         [HttpPut("{id_aeropuerto:int}")]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<AeropuertoResponse>), 200)]
         public async Task<IActionResult> Actualizar(
             int id_aeropuerto,
             [FromBody] ActualizarAeropuertoRequest request)
@@ -113,28 +141,46 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
             catch (BusinessException ex)
             {
-                return UnprocessableEntity(ApiErrorResponse.FromBusiness(ex));
+                return UnprocessableEntity(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
         // ============================================================
-        // DELETE: api/v1/aeropuertos/{id}
+        // DELETE
         // ============================================================
         [HttpDelete("{id_aeropuerto:int}")]
         [Authorize(Roles = "ADMINISTRADOR")]
-        [ProducesResponseType(204)]
         public async Task<IActionResult> Eliminar(int id_aeropuerto)
         {
             try
@@ -145,11 +191,22 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (NotFoundException ex)
             {
-                return NotFound(ApiErrorResponse.FromNotFound(ex));
+                return NotFound(new
+                {
+                    success = false,
+                    error = ex.Message
+                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
     }

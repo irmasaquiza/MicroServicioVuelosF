@@ -50,6 +50,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; } = new List<MetodoPagoEntity>();
         public virtual ICollection<PasajeroEntity> Pasajeros { get; set; } = new List<PasajeroEntity>();
+
         public virtual ICollection<ReservaEntity> Reservas { get; set; } = new List<ReservaEntity>();
 
         public virtual ICollection<UsuarioAppEntity> UsuariosApp { get; set; } = new List<UsuarioAppEntity>();

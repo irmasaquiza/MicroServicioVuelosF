@@ -27,7 +27,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // ============================================================
         [HttpGet]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<PasajeroResponse>>), 200)]
         public async Task<IActionResult> GetAll([FromQuery] PasajeroFiltroRequest filtro)
         {
             try
@@ -38,7 +37,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 AHORA EL MIDDLEWARE MUESTRA EL ERROR REAL
             }
         }
 
@@ -46,7 +45,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // GET: api/v1/pasajeros/{id}
         // ============================================================
         [HttpGet("{id_pasajero:int}")]
-        [ProducesResponseType(typeof(ApiResponse<PasajeroResponse>), 200)]
         public async Task<IActionResult> GetById(int id_pasajero)
         {
             try
@@ -61,7 +59,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw;
             }
         }
 
@@ -69,7 +67,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // POST: api/v1/pasajeros
         // ============================================================
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<PasajeroResponse>), 201)]
         public async Task<IActionResult> Crear([FromBody] CrearPasajeroRequest request)
         {
             try
@@ -90,7 +87,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw;
             }
         }
 
@@ -98,7 +95,6 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         // PUT: api/v1/pasajeros/{id}
         // ============================================================
         [HttpPut("{id_pasajero:int}")]
-        [ProducesResponseType(typeof(ApiResponse<PasajeroResponse>), 200)]
         public async Task<IActionResult> Actualizar(
             int id_pasajero,
             [FromBody] ActualizarPasajeroRequest request)
@@ -123,7 +119,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw;
             }
         }
     }

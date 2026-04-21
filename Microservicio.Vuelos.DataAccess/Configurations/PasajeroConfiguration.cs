@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microservicio.Vuelos.DataAccess.Entities;
 
@@ -12,25 +8,21 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
     {
         public void Configure(EntityTypeBuilder<PasajeroEntity> builder)
         {
-            // 🗂️ Tabla
             builder.ToTable("Pasajero", "ventas");
 
-            // 🔑 PK
             builder.HasKey(x => x.IdPasajero);
 
             builder.Property(x => x.IdPasajero)
                    .HasColumnName("id_pasajero");
 
-            // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
                    .IsRowVersion()
                    .HasColumnName("row_version");
 
-            // 🔗 FK (opcional)
             builder.Property(x => x.IdCliente)
-                   .HasColumnName("id_cliente");
+                   .HasColumnName("id_cliente")
+                   .IsRequired(false);
 
-            // 👤 Datos personales
             builder.Property(x => x.NombrePasajero)
                    .IsRequired()
                    .HasMaxLength(100)
@@ -72,52 +64,44 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("genero_pasajero");
 
             builder.Property(x => x.RequiereAsistencia)
-                   .IsRequired()
-                   .HasDefaultValue(false)
-                   .HasColumnName("requiere_asistencia");
+                   .HasColumnName("requiere_asistencia")
+                   .HasDefaultValue(false);
 
             builder.Property(x => x.ObservacionesPasajero)
                    .HasMaxLength(255)
                    .HasColumnName("observaciones_pasajero");
 
-            // ⚙️ Estado
             builder.Property(x => x.Estado)
-                   .IsRequired()
+                   .HasColumnName("estado")
                    .HasMaxLength(20)
-                   .HasDefaultValue("ACTIVO")
-                   .HasColumnName("estado");
+                   .HasDefaultValue("ACTIVO");
 
             builder.Property(x => x.EsEliminado)
-                   .IsRequired()
-                   .HasDefaultValue(false)
-                   .HasColumnName("es_eliminado");
+                   .HasColumnName("es_eliminado")
+                   .HasDefaultValue(false);
 
-            // 🧾 Auditoría
             builder.Property(x => x.CreadoPorUsuario)
-                   .HasMaxLength(100)
-                   .HasColumnName("creado_por_usuario");
+                   .HasColumnName("creado_por_usuario")
+                   .HasMaxLength(100);
 
             builder.Property(x => x.FechaRegistroUtc)
-                   .HasColumnType("datetime2(0)")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
-                   .HasMaxLength(100)
                    .HasColumnName("modificado_por_usuario");
 
             builder.Property(x => x.FechaModificacionUtc)
-                   .HasColumnType("datetime2(0)")
                    .HasColumnName("fecha_modificacion_utc");
 
             builder.Property(x => x.ModificacionIp)
-                   .HasMaxLength(45)
                    .HasColumnName("modificacion_ip");
 
-            // 🔗 Relación
-
+            // 🔥 RELACIÓN CORRECTA (ESTO ARREGLA TU ERROR)
             builder.HasOne(x => x.Cliente)
-                   .WithMany()
-                   .HasForeignKey(x => x.IdCliente);
+                   .WithMany(c => c.Pasajeros)
+                   .HasForeignKey(x => x.IdCliente)
+                   .OnDelete(DeleteBehavior.Restrict)
+                   .HasConstraintName("FK_Pasajero_Cliente");
         }
     }
 }

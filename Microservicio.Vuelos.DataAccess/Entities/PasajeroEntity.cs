@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
 {
@@ -10,7 +9,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public byte[] RowVersion { get; set; }
 
-        public int? IdCliente { get; set; }   // ✔ ya nullable
+        public int? IdCliente { get; set; }
 
         public string NombrePasajero { get; set; } = null!;
         public string ApellidoPasajero { get; set; } = null!;
@@ -19,29 +18,29 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public string NumeroDocumentoPasajero { get; set; } = null!;
 
         public DateTime? FechaNacimientoPasajero { get; set; }
-        public string? NacionalidadPasajero { get; set; }        // 🔥 nullable
+        public string? NacionalidadPasajero { get; set; }
 
-        public string? EmailContactoPasajero { get; set; }       // 🔥 nullable
-        public string? TelefonoContactoPasajero { get; set; }    // 🔥 nullable
+        public string? EmailContactoPasajero { get; set; }
+        public string? TelefonoContactoPasajero { get; set; }
 
-        public string? GeneroPasajero { get; set; }              // 🔥 nullable
+        public string? GeneroPasajero { get; set; }
 
         public bool RequiereAsistencia { get; set; }
 
-        public string? ObservacionesPasajero { get; set; }       // 🔥 nullable
+        public string? ObservacionesPasajero { get; set; }
 
-        public string Estado { get; set; } = null!;
+        public string Estado { get; set; } = "ACTIVO";
         public bool EsEliminado { get; set; }
 
         public string CreadoPorUsuario { get; set; } = null!;
         public DateTime FechaRegistroUtc { get; set; }
 
-        public string? ModificadoPorUsuario { get; set; }        // 🔥 nullable
+        public string? ModificadoPorUsuario { get; set; }
         public DateTime? FechaModificacionUtc { get; set; }
-        public string? ModificacionIp { get; set; }              // 🔥 nullable
+        public string? ModificacionIp { get; set; }
 
         // 🔗 Relaciones
-        public virtual ClienteEntity? Cliente { get; set; }      // 🔥 nullable
+        public virtual ClienteEntity? Cliente { get; set; }
 
         public virtual ICollection<ReservaEntity> Reservas { get; set; } = new List<ReservaEntity>();
     }

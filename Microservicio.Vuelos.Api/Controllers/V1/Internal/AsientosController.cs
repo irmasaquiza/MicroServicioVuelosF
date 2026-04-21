@@ -23,10 +23,9 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         }
 
         // ============================================================
-        // GET: api/v1/vuelos/{id_vuelo}/asientos
+        // GET
         // ============================================================
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AsientoResponse>>), 200)]
         public async Task<IActionResult> GetByVuelo(
             int id_vuelo,
             [FromQuery] AsientoFiltroRequest filtro)
@@ -43,15 +42,14 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 AQUÍ
             }
         }
 
         // ============================================================
-        // GET: api/v1/vuelos/{id_vuelo}/asientos/{id_asiento}
+        // GET BY ID
         // ============================================================
         [HttpGet("{id_asiento:int}")]
-        [ProducesResponseType(typeof(ApiResponse<AsientoResponse>), 200)]
         public async Task<IActionResult> GetById(int id_vuelo, int id_asiento)
         {
             try
@@ -66,16 +64,15 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 AQUÍ
             }
         }
 
         // ============================================================
-        // POST: api/v1/vuelos/{id_vuelo}/asientos
+        // POST
         // ============================================================
         [HttpPost]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<AsientoResponse>), 201)]
         public async Task<IActionResult> Crear(int id_vuelo, [FromBody] CrearAsientoRequest request)
         {
             try
@@ -100,16 +97,15 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 AQUÍ
             }
         }
 
         // ============================================================
-        // PATCH: api/v1/vuelos/{id_vuelo}/asientos/{id_asiento}
+        // PATCH
         // ============================================================
         [HttpPatch("{id_asiento:int}")]
         [Authorize(Roles = "ADMINISTRADOR,AEROLINEA")]
-        [ProducesResponseType(typeof(ApiResponse<AsientoResponse>), 200)]
         public async Task<IActionResult> Actualizar(
             int id_vuelo,
             int id_asiento,
@@ -135,7 +131,7 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (Exception)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                throw; // 🔥 AQUÍ
             }
         }
     }

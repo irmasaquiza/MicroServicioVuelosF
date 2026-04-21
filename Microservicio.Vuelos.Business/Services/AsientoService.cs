@@ -1,9 +1,4 @@
-﻿
-
-// ============================================================
-// Services/AsientoService.cs
-// ============================================================
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microservicio.Vuelos.Business.DTOs.Internal.Asiento;
@@ -42,6 +37,10 @@ namespace Microservicio.Vuelos.Business.Services
 
             var dataModel = AsientoBusinessMapper.ToDataModel(request);
             dataModel.IdVuelo = idVuelo;
+
+            // 🔥 SOLUCIÓN
+            dataModel.Estado = "ACTIVO";
+            dataModel.Eliminado = false;
 
             var creado = await _asientoDataService.CreateAsync(dataModel);
             return AsientoBusinessMapper.ToResponse(creado);

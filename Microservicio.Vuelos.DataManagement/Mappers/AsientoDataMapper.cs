@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microservicio.Vuelos.DataAccess.Entities;
 using Microservicio.Vuelos.DataManagement.Models;
@@ -42,7 +39,11 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
                 Disponible = model.Disponible,
                 PrecioExtra = model.PrecioExtra,
                 Posicion = model.Posicion,
-                Estado = model.Estado
+
+                // 🔥 FIX
+                Estado = model.Estado ?? "ACTIVO",
+
+                Eliminado = model.Eliminado
             };
         }
 
@@ -54,18 +55,16 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
             entity.Disponible = model.Disponible;
             entity.PrecioExtra = model.PrecioExtra;
             entity.Posicion = model.Posicion;
-            entity.Estado = model.Estado;
 
-            // ❗ NO tocamos IdVuelo normalmente en update
+            // 🔥 PROTECCIÓN
+            entity.Estado = model.Estado ?? entity.Estado;
         }
 
-        // 🔹 Lista Entity → DataModel
         public static IEnumerable<AsientoDataModel> ToDataModelList(IEnumerable<AsientoEntity> entities)
         {
             return entities?.Select(ToDataModel).ToList();
         }
 
-        // 🔹 Lista DataModel → Entity
         public static IEnumerable<AsientoEntity> ToEntityList(IEnumerable<AsientoDataModel> models)
         {
             return models?.Select(ToEntity).ToList();

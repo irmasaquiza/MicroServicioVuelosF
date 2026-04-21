@@ -21,5 +21,6 @@ namespace Microservicio.Vuelos.DataManagement.Models
         public string Posicion { get; set; }
 
         public string Estado { get; set; }
+        public bool Eliminado { get; set; }
     }
 }
