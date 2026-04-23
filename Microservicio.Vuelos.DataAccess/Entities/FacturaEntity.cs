@@ -13,7 +13,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         // 🔗 Relaciones
         public int IdCliente { get; set; }
         public int IdReserva { get; set; }
-        public int IdMetodo { get; set; }
+     //   public int IdMetodo { get; set; }
 
         // Datos factura
         public string NumeroFactura { get; set; } = null!;
@@ -52,7 +52,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         // 🔗 Navigation Properties
         public virtual ClienteEntity? Cliente { get; set; }     // 🔥 nullable
         public virtual ReservaEntity? Reserva { get; set; }     // 🔥 nullable
-        public virtual MetodoPagoEntity? MetodoPago { get; set; } // 🔥 nullable
+       // public virtual MetodoPagoEntity? MetodoPago { get; set; } // 🔥 nullable
 
         public virtual ICollection<BoletoEntity> Boletos { get; set; } = new List<BoletoEntity>();
     }

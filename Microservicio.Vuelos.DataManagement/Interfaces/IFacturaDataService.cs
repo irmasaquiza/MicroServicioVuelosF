@@ -23,7 +23,7 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
         Task<IEnumerable<FacturaDataModel>> GetByReservaAsync(int idReserva);
 
         // 🔍 Obtener por método de pago
-        Task<IEnumerable<FacturaDataModel>> GetByMetodoPagoAsync(int idMetodo);
+      //  Task<IEnumerable<FacturaDataModel>> GetByMetodoPagoAsync(int idMetodo);
 
         // 🔍 Obtener por número de factura (CLAVE 💀)
         Task<FacturaDataModel> GetByNumeroAsync(string numeroFactura);

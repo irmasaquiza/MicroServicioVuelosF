@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -34,4 +34,4 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
         // ❌ Eliminación lógica
         Task<bool> DeleteAsync(int id);
     }
-}
+}*/

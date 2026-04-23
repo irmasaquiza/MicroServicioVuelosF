@@ -24,8 +24,8 @@ namespace Microservicio.Vuelos.DataManagement.UoW
         public IUsuarioAppRepository UsuarioAppRepository { get; }
         public IRolRepository RolRepository { get; }
         public IUsuarioRolRepository UsuarioRolRepository { get; }
-        public ITipoMetodoPagoRepository TipoMetodoPagoRepository { get; }
-        public IMetodoPagoRepository MetodoPagoRepository { get; }
+    //    public ITipoMetodoPagoRepository TipoMetodoPagoRepository { get; }
+    //    public IMetodoPagoRepository MetodoPagoRepository { get; }
         public IPasajeroRepository PasajeroRepository { get; }
         public IReservaRepository ReservaRepository { get; }
         public IFacturaRepository FacturaRepository { get; }
@@ -47,8 +47,8 @@ namespace Microservicio.Vuelos.DataManagement.UoW
             UsuarioAppRepository = new UsuarioAppRepository(_context);
             RolRepository = new RolRepository(_context);
             UsuarioRolRepository = new UsuarioRolRepository(_context);
-            TipoMetodoPagoRepository = new TipoMetodoPagoRepository(_context);
-            MetodoPagoRepository = new MetodoPagoRepository(_context);
+        //    TipoMetodoPagoRepository = new TipoMetodoPagoRepository(_context);
+        //    MetodoPagoRepository = new MetodoPagoRepository(_context);
             PasajeroRepository = new PasajeroRepository(_context);
             ReservaRepository = new ReservaRepository(_context);
             FacturaRepository = new FacturaRepository(_context);

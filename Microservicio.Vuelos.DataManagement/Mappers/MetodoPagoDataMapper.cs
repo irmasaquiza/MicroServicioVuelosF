@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Linq;
 using Microservicio.Vuelos.DataAccess.Entities;
 using Microservicio.Vuelos.DataManagement.Models;
@@ -108,4 +108,4 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
             return models?.Select(ToEntity).ToList();
         }
     }
-}
+}*/

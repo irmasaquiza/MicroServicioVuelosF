@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections.Generic;
@@ -75,4 +75,4 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
             _context.TiposMetodoPago.Update(tipoMetodo);
         }
     }
-}
+}*/

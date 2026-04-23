@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*ing System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
@@ -54,4 +54,4 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasDatabaseName("UQ_TipoMetodoPago_Nombre");
         }
     }
-}
+}*/

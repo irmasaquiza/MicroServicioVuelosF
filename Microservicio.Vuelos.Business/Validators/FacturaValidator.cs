@@ -37,8 +37,8 @@ namespace Microservicio.Vuelos.Business.Validators
             if (request.IdReserva <= 0)
                 errors.Add("La reserva es obligatoria");
 
-            if (request.IdMetodo <= 0)
-                errors.Add("El método de pago es obligatorio");
+         //   if (request.IdMetodo <= 0)
+         //       errors.Add("El método de pago es obligatorio");
 
             // Valores
             if (request.Subtotal < 0)

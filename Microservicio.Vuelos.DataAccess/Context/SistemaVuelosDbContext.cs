@@ -27,12 +27,12 @@ namespace Microservicio.Vuelos.DataAccess.Context
         public DbSet<EquipajeEntity> Equipajes { get; set; }
         public DbSet<EscalaEntity> Escalas { get; set; }
         public DbSet<FacturaEntity> Facturas { get; set; }
-        public DbSet<MetodoPagoEntity> MetodosPago { get; set; }
+       // public DbSet<MetodoPagoEntity> MetodosPago { get; set; }
         public DbSet<PaisEntity> Paises { get; set; }
         public DbSet<PasajeroEntity> Pasajeros { get; set; }
         public DbSet<ReservaEntity> Reservas { get; set; }
         public DbSet<RolEntity> Roles { get; set; }
-        public DbSet<TipoMetodoPagoEntity> TiposMetodoPago { get; set; }
+        //public DbSet<TipoMetodoPagoEntity> TiposMetodoPago { get; set; }
         public DbSet<UsuarioAppEntity> UsuariosApp { get; set; }
         public DbSet<UsuarioRolEntity> UsuariosRoles { get; set; }
         public DbSet<VueloEntity> Vuelos { get; set; }
@@ -55,12 +55,12 @@ namespace Microservicio.Vuelos.DataAccess.Context
             modelBuilder.ApplyConfiguration(new EquipajeConfiguration());
             modelBuilder.ApplyConfiguration(new EscalaConfiguration());
             modelBuilder.ApplyConfiguration(new FacturaConfiguration());
-            modelBuilder.ApplyConfiguration(new MetodoPagoConfiguration());
+           // modelBuilder.ApplyConfiguration(new MetodoPagoConfiguration());
             modelBuilder.ApplyConfiguration(new PaisConfiguration());
             modelBuilder.ApplyConfiguration(new PasajeroConfiguration());
             modelBuilder.ApplyConfiguration(new ReservaConfiguration());
             modelBuilder.ApplyConfiguration(new RolConfiguration());
-            modelBuilder.ApplyConfiguration(new TipoMetodoPagoConfiguration());
+           // modelBuilder.ApplyConfiguration(new TipoMetodoPagoConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioAppConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioRolConfiguration());
             modelBuilder.ApplyConfiguration(new VueloConfiguration());

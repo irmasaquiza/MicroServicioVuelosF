@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*ing System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -46,4 +46,4 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public virtual ICollection<FacturaEntity> Facturas { get; set; } = new List<FacturaEntity>();
     }
-}
+}*/

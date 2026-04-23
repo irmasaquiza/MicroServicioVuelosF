@@ -23,7 +23,7 @@ namespace Microservicio.Vuelos.Business.Mappers
             {
                 IdCliente = request.IdCliente,
                 IdReserva = request.IdReserva,
-                IdMetodo = request.IdMetodo,
+            //    IdMetodo = request.IdMetodo,
                 Subtotal = request.Subtotal,
                 ValorIva = request.ValorIva,
                 CargoServicio = request.CargoServicio,
@@ -83,7 +83,7 @@ namespace Microservicio.Vuelos.Business.Mappers
                 NumeroFactura = model.NumeroFactura,
                 IdCliente = model.IdCliente,
                 IdReserva = model.IdReserva,
-                IdMetodo = model.IdMetodo,
+            //    IdMetodo = model.IdMetodo,
                 FechaEmision = model.FechaEmision,
                 Subtotal = model.Subtotal,
                 ValorIva = model.ValorIva,

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -38,4 +38,4 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.MetodoPago
             set => _pageSize = value <= 0 ? 20 : value;
         }
     }
-}
+}*/

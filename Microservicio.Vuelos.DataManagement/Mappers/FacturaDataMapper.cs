@@ -22,7 +22,7 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
 
                 IdCliente = entity.IdCliente,
                 IdReserva = entity.IdReserva,
-                IdMetodo = entity.IdMetodo,
+               // IdMetodo = entity.IdMetodo,
 
                 NumeroFactura = entity.NumeroFactura,
                 FechaEmision = entity.FechaEmision,
@@ -56,7 +56,7 @@ namespace Microservicio.Vuelos.DataManagement.Mappers
 
                 IdCliente = model.IdCliente,
                 IdReserva = model.IdReserva,
-                IdMetodo = model.IdMetodo,
+             //   IdMetodo = model.IdMetodo,
 
                 NumeroFactura = model.NumeroFactura,
                 FechaEmision = model.FechaEmision,

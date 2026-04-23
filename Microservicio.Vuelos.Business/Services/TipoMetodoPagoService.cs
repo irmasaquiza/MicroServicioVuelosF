@@ -1,4 +1,4 @@
-﻿
+﻿/*
 // ============================================================
 // Services/TipoMetodoPagoService.cs
 // ============================================================
@@ -116,4 +116,4 @@ namespace Microservicio.Vuelos.Business.Services
             return true;
         }
     }
-}
+}*/

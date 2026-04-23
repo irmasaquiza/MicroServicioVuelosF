@@ -92,7 +92,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
         }
 
         // 💳 Métodos de pago del cliente
-        public async Task<IEnumerable<object>> GetMetodosPagoAsync(int idCliente)
+    /*    public async Task<IEnumerable<object>> GetMetodosPagoAsync(int idCliente)
         {
             return await _context.MetodosPago
                 .Where(m => m.IdCliente == idCliente && !m.EsEliminado)
@@ -105,7 +105,7 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                     m.EsPrincipal
                 })
                 .ToListAsync();
-        }
+        }*/
 
         // 📊 Resumen general del cliente
         public async Task<object> GetResumenClienteAsync(int idCliente)

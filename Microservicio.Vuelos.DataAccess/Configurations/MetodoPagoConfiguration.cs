@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*ing Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microservicio.Vuelos.DataAccess.Entities;
 
@@ -140,4 +140,4 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             );
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 using System;
@@ -33,4 +33,4 @@ namespace Microservicio.Vuelos.DataManagement.Models
         // 📊 Estado
         public string Estado { get; set; }
     }
-}
+}*/

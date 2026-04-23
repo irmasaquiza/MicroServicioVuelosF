@@ -16,9 +16,9 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Factura
         [Range(1, int.MaxValue)]
         public int IdReserva { get; set; }
 
-        [Required]
-        [Range(1, int.MaxValue)]
-        public int IdMetodo { get; set; }
+//        [Required]
+//        [Range(1, int.MaxValue)]
+//        public int IdMetodo { get; set; }
 
         [Required]
         [Range(0, double.MaxValue)]

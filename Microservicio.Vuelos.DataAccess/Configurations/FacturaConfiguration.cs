@@ -39,9 +39,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .IsRequired()
                    .HasColumnName("id_reserva");
 
-            builder.Property(x => x.IdMetodo)
-                   .IsRequired()
-                   .HasColumnName("id_metodo");
+        //    builder.Property(x => x.IdMetodo)
+        //           .IsRequired()
+        //           .HasColumnName("id_metodo");
 
             // 🧾 Datos factura
             builder.Property(x => x.NumeroFactura)
@@ -138,9 +138,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .WithMany(r => r.Facturas)
                    .HasForeignKey(x => x.IdReserva);
 
-            builder.HasOne(x => x.MetodoPago)
-                   .WithMany(mp => mp.Facturas)
-                   .HasForeignKey(x => x.IdMetodo);
+           // builder.HasOne(x => x.MetodoPago)
+           //        .WithMany(mp => mp.Facturas)
+           //        .HasForeignKey(x => x.IdMetodo);
 
             builder.HasMany(x => x.Boletos)
                    .WithOne(b => b.Factura)

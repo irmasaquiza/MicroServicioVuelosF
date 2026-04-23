@@ -71,7 +71,7 @@ namespace Microservicio.Vuelos.Business.Services
             {
                 IdCliente = request.IdCliente,
                 IdReserva = request.IdReserva,
-                IdMetodo = request.IdMetodo,
+             //   IdMetodo = request.IdMetodo,
                 NumeroFactura = request.NumeroFactura,
                 Estado = request.Estado,
                 OrigenCanalFactura = request.OrigenCanalFactura,

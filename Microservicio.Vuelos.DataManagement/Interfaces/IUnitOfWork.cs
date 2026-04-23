@@ -19,8 +19,8 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
         IUsuarioAppRepository UsuarioAppRepository { get; }
         IRolRepository RolRepository { get; }
         IUsuarioRolRepository UsuarioRolRepository { get; }
-        ITipoMetodoPagoRepository TipoMetodoPagoRepository { get; }
-        IMetodoPagoRepository MetodoPagoRepository { get; }
+    //    ITipoMetodoPagoRepository TipoMetodoPagoRepository { get; }
+     //   IMetodoPagoRepository MetodoPagoRepository { get; }
         IPasajeroRepository PasajeroRepository { get; }
         IReservaRepository ReservaRepository { get; }
         IFacturaRepository FacturaRepository { get; }

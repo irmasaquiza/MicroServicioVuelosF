@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+﻿/*using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -102,4 +102,4 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
         }
     }
-}
+}*/

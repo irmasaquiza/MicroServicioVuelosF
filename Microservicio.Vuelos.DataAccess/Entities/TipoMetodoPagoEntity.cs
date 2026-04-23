@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 
 namespace Microservicio.Vuelos.DataAccess.Entities
@@ -16,4 +17,4 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         // 🔗 Relaciones
         public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; } = new List<MetodoPagoEntity>();
     }
-}
+}*/

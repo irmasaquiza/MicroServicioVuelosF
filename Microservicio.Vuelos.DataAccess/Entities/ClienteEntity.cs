@@ -48,7 +48,8 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public virtual CiudadEntity? CiudadResidencia { get; set; }   // 🔥 nullable
         public virtual PaisEntity? PaisNacionalidad { get; set; }     // 🔥 nullable
 
-        public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; } = new List<MetodoPagoEntity>();
+       
+        //public virtual ICollection<MetodoPagoEntity> MetodosPago { get; set; } = new List<MetodoPagoEntity>();
         public virtual ICollection<PasajeroEntity> Pasajeros { get; set; } = new List<PasajeroEntity>();
 
         public virtual ICollection<ReservaEntity> Reservas { get; set; } = new List<ReservaEntity>();

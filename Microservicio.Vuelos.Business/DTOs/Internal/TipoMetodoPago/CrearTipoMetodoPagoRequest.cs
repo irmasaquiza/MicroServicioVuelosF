@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,4 +15,4 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.TipoMetodoPago
         [StringLength(150)]
         public string? Descripcion { get; set; }
     }
-}
+}*/

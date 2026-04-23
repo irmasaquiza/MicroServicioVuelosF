@@ -40,12 +40,12 @@ namespace Microservicio.Vuelos.DataAccess.Queries
                         f.Total
                     },
 
-                    MetodoPago = new
+                    /*MetodoPago = new
                     {
                         f.MetodoPago.Alias,
                         f.MetodoPago.MarcaTarjeta,
                         f.MetodoPago.Ultimos4
-                    },
+                    },*/
 
                     Estado = f.Estado
                 })

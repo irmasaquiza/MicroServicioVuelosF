@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections.Generic;
@@ -36,4 +36,4 @@ namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
         // ❌ Eliminación lógica
         void Delete(MetodoPagoEntity metodoPago);
     }
-}
+}*/

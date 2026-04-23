@@ -91,7 +91,7 @@ namespace Microservicio.Vuelos.DataManagement.Services
         // ─────────────────────────────────────────────
         // GET BY METODO PAGO
         // ─────────────────────────────────────────────
-        public async Task<IEnumerable<FacturaDataModel>> GetByMetodoPagoAsync(
+    /*    public async Task<IEnumerable<FacturaDataModel>> GetByMetodoPagoAsync(
             int idMetodo)
         {
             if (idMetodo <= 0)
@@ -109,7 +109,7 @@ namespace Microservicio.Vuelos.DataManagement.Services
                 return Enumerable.Empty<FacturaDataModel>();
 
             return FacturaDataMapper.ToDataModelList(filtrados);
-        }
+        }*/
 
         // ─────────────────────────────────────────────
         // GET BY NUMERO
@@ -151,8 +151,8 @@ namespace Microservicio.Vuelos.DataManagement.Services
             if (filtro.IdReserva.HasValue)
                 query = query.Where(f => f.IdReserva == filtro.IdReserva.Value);
 
-            if (filtro.IdMetodo.HasValue)
-                query = query.Where(f => f.IdMetodo == filtro.IdMetodo.Value);
+         //   if (filtro.IdMetodo.HasValue)
+         //       query = query.Where(f => f.IdMetodo == filtro.IdMetodo.Value);
 
             if (!string.IsNullOrWhiteSpace(filtro.NumeroFactura))
                 query = query.Where(f =>
@@ -224,9 +224,9 @@ namespace Microservicio.Vuelos.DataManagement.Services
             if (model.IdReserva <= 0)
                 throw new ArgumentException("El ID de la reserva es obligatorio.");
 
-            if (model.IdMetodo <= 0)
-                throw new ArgumentException(
-                    "El ID del método de pago es obligatorio.");
+        //    if (model.IdMetodo <= 0)
+        //        throw new ArgumentException(
+        //            "El ID del método de pago es obligatorio.");
 
             if (model.Subtotal < 0)
                 throw new ArgumentException("El subtotal no puede ser negativo.");
@@ -271,12 +271,12 @@ namespace Microservicio.Vuelos.DataManagement.Services
                     $"No existe una reserva con ID '{model.IdReserva}'.");
 
             // Verificar que método de pago exista
-            var metodo = await _uow.MetodoPagoRepository
-                                   .GetByIdAsync(model.IdMetodo);
+         //   var metodo = await _uow.MetodoPagoRepository
+         //                          .GetByIdAsync(model.IdMetodo);
 
-            if (metodo == null)
-                throw new InvalidOperationException(
-                    $"No existe un método de pago con ID '{model.IdMetodo}'.");
+         //   if (metodo == null)
+         //       throw new InvalidOperationException(
+         //           $"No existe un método de pago con ID '{model.IdMetodo}'.");
 
             var entity = FacturaDataMapper.ToEntity(model);
 

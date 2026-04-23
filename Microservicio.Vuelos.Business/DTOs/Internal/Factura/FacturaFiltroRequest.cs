@@ -12,7 +12,7 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Factura
 
         public int? IdReserva { get; set; }
 
-        public int? IdMetodo { get; set; }
+//        public int? IdMetodo { get; set; }
 
         public string? NumeroFactura { get; set; }
 

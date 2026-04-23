@@ -15,7 +15,7 @@ namespace Microservicio.Vuelos.DataManagement.Models
         // 🔗 Relaciones
         public int IdCliente { get; set; }
         public int IdReserva { get; set; }
-        public int IdMetodo { get; set; }
+    //    public int IdMetodo { get; set; }
 
         // 🧾 Datos factura
         public string NumeroFactura { get; set; }
