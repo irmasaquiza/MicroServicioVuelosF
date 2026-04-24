@@ -35,7 +35,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("id_vuelo");
 
             builder.Property(x => x.IdAsiento)
-                   .IsRequired()
+                   .IsRequired(false)
                    .HasColumnName("id_asiento");
 
             builder.Property(x => x.IdFactura)
@@ -123,6 +123,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             builder.HasOne(x => x.Asiento)
                    .WithMany()
                    .HasForeignKey(x => x.IdAsiento)
+                   .IsRequired(false)
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Factura)
@@ -136,9 +137,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .IsUnique()
                    .HasDatabaseName("UQ_BOLETO_CODIGO");
 
-            builder.HasIndex(x => new { x.IdVuelo, x.IdAsiento })
-                   .IsUnique()
-                   .HasDatabaseName("UQ_BOLETO_VUELO_ASIENTO");
+          //  builder.HasIndex(x => new { x.IdVuelo, x.IdAsiento })
+          //         .IsUnique()
+          //         .HasDatabaseName("UQ_BOLETO_VUELO_ASIENTO");
         }
     }
 }

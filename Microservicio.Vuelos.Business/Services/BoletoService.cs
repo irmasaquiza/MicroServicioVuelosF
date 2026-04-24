@@ -41,42 +41,65 @@ namespace Microservicio.Vuelos.Business.Services
         {
             BoletoValidator.ValidarCrear(request);
 
+            // ============================================================
             // 🔥 Validar reserva
+            // ============================================================
             var reserva = await _reservaDataService.GetByIdAsync(request.IdReserva);
             if (reserva == null)
                 throw new BusinessException("RESERVA_NO_ENCONTRADA",
                     $"No existe la reserva '{request.IdReserva}'.");
 
+            // ============================================================
             // 🔥 Validar vuelo
+            // ============================================================
             var vuelo = await _vueloDataService.GetByIdAsync(request.IdVuelo);
             if (vuelo == null)
                 throw new BusinessException("VUELO_NO_ENCONTRADO",
                     $"No existe el vuelo '{request.IdVuelo}'.");
 
-            // 🔥 Validar asiento
-            var asiento = await _asientoDataService.GetByIdAsync(request.IdAsiento);
-            if (asiento == null)
-                throw new BusinessException("ASIENTO_NO_ENCONTRADO",
-                    $"No existe el asiento '{request.IdAsiento}'.");
+            // ============================================================
+            // 🔥 ASIENTO OPCIONAL
+            // ============================================================
+            AsientoDataModel? asiento = null;
+            decimal precioExtra = 0;
 
-            if (!asiento.Disponible)
-                throw new BusinessException("ASIENTO_OCUPADO",
-                    $"El asiento '{asiento.NumeroAsiento}' ya está ocupado.");
+            if (request.IdAsiento.HasValue)
+            {
+                asiento = await _asientoDataService.GetByIdAsync(request.IdAsiento.Value);
 
-            if (asiento.IdVuelo != request.IdVuelo)
-                throw new BusinessException("ASIENTO_INVALIDO",
-                    "El asiento no pertenece al vuelo.");
+                if (asiento == null)
+                    throw new BusinessException("ASIENTO_NO_ENCONTRADO",
+                        $"No existe el asiento '{request.IdAsiento}'.");
 
+                if (!asiento.Disponible)
+                    throw new BusinessException("ASIENTO_OCUPADO",
+                        $"El asiento '{asiento.NumeroAsiento}' ya está ocupado.");
+
+                if (asiento.IdVuelo != request.IdVuelo)
+                    throw new BusinessException("ASIENTO_INVALIDO",
+                        "El asiento no pertenece al vuelo.");
+
+                // ✔ solo si hay asiento
+                precioExtra = asiento.PrecioExtra;
+            }
+
+            // ============================================================
             // 🔥 Generar código
+            // ============================================================
             var codigo = $"BT-{System.DateTime.UtcNow:yyyyMMdd}-{System.Guid.NewGuid().ToString("N")[..6].ToUpper()}";
 
-            // 🔥 Calcular precio real
+            // ============================================================
+            // 🔥 Calcular precios (BACKEND MANDA)
+            // ============================================================
             decimal precioBase = vuelo.PrecioBase;
-            decimal precioExtra = asiento.PrecioExtra;
             decimal impuestos = (precioBase + precioExtra) * 0.12m;
             decimal total = precioBase + precioExtra + impuestos;
 
+            // ============================================================
+            // 🔥 Crear modelo
+            // ============================================================
             var dataModel = BoletoBusinessMapper.ToDataModel(request);
+
             dataModel.CodigoBoleto = codigo;
             dataModel.PrecioVueloBase = precioBase;
             dataModel.PrecioAsientoExtra = precioExtra;
@@ -85,13 +108,17 @@ namespace Microservicio.Vuelos.Business.Services
 
             var creado = await _boletoDataService.CreateAsync(dataModel);
 
-            // 🔥 Marcar asiento ocupado
-            asiento.Disponible = false;
-            await _asientoDataService.UpdateAsync(asiento);
+            // ============================================================
+            // 🔥 Marcar asiento ocupado SOLO SI EXISTE
+            // ============================================================
+            if (asiento != null)
+            {
+                asiento.Disponible = false;
+                await _asientoDataService.UpdateAsync(asiento);
+            }
 
             return BoletoBusinessMapper.ToResponse(creado);
         }
-
         // ============================================================
         // GET BY ID
         // ============================================================

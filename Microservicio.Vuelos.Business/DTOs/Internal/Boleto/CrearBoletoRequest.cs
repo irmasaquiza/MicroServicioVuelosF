@@ -16,9 +16,9 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Boleto
         [Range(1, int.MaxValue)]
         public int IdVuelo { get; set; }
 
-        [Required]
+       // [Required]
         [Range(1, int.MaxValue)]
-        public int IdAsiento { get; set; }
+        public int? IdAsiento { get; set; }
 
         [Required]
         [Range(1, int.MaxValue)]
@@ -32,7 +32,7 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Boleto
         public decimal PrecioVueloBase { get; set; }
 
         [Range(0, double.MaxValue)]
-        public decimal PrecioAsientoExtra { get; set; } = 0;
+        public decimal? PrecioAsientoExtra { get; set; } = 0;
 
         [Range(0, double.MaxValue)]
         public decimal ImpuestosBoleto { get; set; } = 0;

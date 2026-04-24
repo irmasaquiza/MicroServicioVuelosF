@@ -12,7 +12,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
 
         public int IdReserva { get; set; }
         public int IdVuelo { get; set; }
-        public int IdAsiento { get; set; }
+        public int? IdAsiento { get; set; }
         public int IdFactura { get; set; }
 
         public string CodigoBoleto { get; set; } = null!;   // ✔ obligatorio
@@ -20,7 +20,7 @@ namespace Microservicio.Vuelos.DataAccess.Entities
         public string Clase { get; set; } = null!;          // ✔ obligatorio
 
         public decimal PrecioVueloBase { get; set; }
-        public decimal PrecioAsientoExtra { get; set; }
+        public decimal? PrecioAsientoExtra { get; set; }
         public decimal ImpuestosBoleto { get; set; }
         public decimal CargoEquipaje { get; set; }
         public decimal PrecioFinal { get; set; }

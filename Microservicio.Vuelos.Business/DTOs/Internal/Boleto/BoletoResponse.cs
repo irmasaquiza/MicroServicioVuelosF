@@ -15,7 +15,7 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Boleto
 
         public int IdVuelo { get; set; }
 
-        public int IdAsiento { get; set; }
+        public int? IdAsiento { get; set; }
 
         public int IdFactura { get; set; }
 
@@ -23,7 +23,7 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Boleto
 
         public decimal PrecioVueloBase { get; set; }
 
-        public decimal PrecioAsientoExtra { get; set; }
+        public decimal? PrecioAsientoExtra { get; set; }
 
         public decimal ImpuestosBoleto { get; set; }
 
