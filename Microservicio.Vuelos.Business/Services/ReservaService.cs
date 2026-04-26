@@ -162,7 +162,6 @@ namespace Microservicio.Vuelos.Business.Services
 
             return ReservaBusinessMapper.ToResponse(model);
         }
-
         // ============================================================
         // CAMBIAR ESTADO
         // ============================================================
@@ -173,7 +172,60 @@ namespace Microservicio.Vuelos.Business.Services
             if (model == null)
                 throw new NotFoundException("Reserva", id);
 
-            model.EstadoReserva = request.EstadoReserva;
+            var nuevoEstado = request.EstadoReserva.ToUpper();
+
+            // ============================================================
+            // 🔥 CUANDO PASA A CON → CREAR FACTURA AUTOMÁTICA
+            // ============================================================
+            if (nuevoEstado == "CON")
+            {
+                var facturas = await _facturaDataService.GetByReservaAsync(id);
+
+                // evitar duplicar factura
+                if (facturas == null || !facturas.Any())
+                {
+                    var numeroFactura = $"FAC-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+                    var factura = new FacturaDataModel
+                    {
+                        IdCliente = model.IdCliente, // 🔥 ESTA ES LA CLAVE
+                        IdReserva = id,
+                        NumeroFactura = numeroFactura,
+                        FechaEmision = DateTime.UtcNow,
+
+                        Subtotal = model.SubtotalReserva,
+                        ValorIva = model.ValorIva,
+                        CargoServicio = 0,
+                        Total = model.TotalReserva,
+
+                        Estado = "ABI",
+                        ObservacionesFactura = "Generada automáticamente",
+                        OrigenCanalFactura = "SISTEMA",
+                        ServicioOrigen = "VUELOS"
+                    };
+
+                    await _facturaDataService.CreateAsync(factura);
+                }
+            }
+
+            // ============================================================
+            // 🔥 VALIDAR FIN SOLO SI EL VUELO ATERRIZÓ
+            // ============================================================
+            if (nuevoEstado == "FIN")
+            {
+                var vuelo = await _vueloDataService.GetByIdAsync(model.IdVuelo);
+
+                if (vuelo == null)
+                    throw new BusinessException("VUELO_NO_ENCONTRADO",
+                        "No se encontró el vuelo asociado.");
+
+                if (vuelo.EstadoVuelo != "ATERRIZADO")
+                    throw new BusinessException("VUELO_NO_FINALIZADO",
+                        "No se puede finalizar la reserva si el vuelo no ha aterrizado.");
+            }
+
+            // 🔥 aplicar cambio
+            model.EstadoReserva = nuevoEstado;
 
             await _reservaDataService.UpdateAsync(model);
 

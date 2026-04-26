@@ -12,6 +12,7 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.DataManagement.Interfaces; // 🔥 1. AGREGAR DEPENDENCIA
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -21,17 +22,20 @@ namespace Microservicio.Vuelos.Business.Services
         private readonly IReservaDataService _reservaDataService;
         private readonly IVueloDataService _vueloDataService;
         private readonly IAsientoDataService _asientoDataService;
+        private readonly IFacturaDataService _facturaDataService; // 🔥 1. NUEVA DEPENDENCIA
 
         public BoletoService(
             IBoletoDataService boletoDataService,
             IReservaDataService reservaDataService,
             IVueloDataService vueloDataService,
-            IAsientoDataService asientoDataService)
+            IAsientoDataService asientoDataService,
+            IFacturaDataService facturaDataService) // 🔥 1. NUEVO PARÁMETRO
         {
             _boletoDataService = boletoDataService;
             _reservaDataService = reservaDataService;
             _vueloDataService = vueloDataService;
             _asientoDataService = asientoDataService;
+            _facturaDataService = facturaDataService; // 🔥 1. ASIGNACIÓN
         }
 
         // ============================================================
@@ -84,6 +88,26 @@ namespace Microservicio.Vuelos.Business.Services
             }
 
             // ============================================================
+            // 🔥 VALIDAR FACTURA (SOLO ABI)
+            // ============================================================
+            var factura = await _facturaDataService.GetByIdAsync(request.IdFactura);
+            // ============================================================
+            // 🔥 VALIDAR QUE FACTURA PERTENECE A LA RESERVA
+            // ============================================================
+            if (factura.IdReserva != request.IdReserva)
+                throw new BusinessException("FACTURA_RESERVA_INVALIDA",
+                    "La factura no pertenece a la reserva.");
+
+            if (factura == null)
+                throw new BusinessException("FACTURA_NO_ENCONTRADA",
+                    $"No existe la factura '{request.IdFactura}'.");
+
+            // ⚠️ usa Estado (no EstadoFactura)
+            if (factura.Estado != "ABI")
+                throw new BusinessException("FACTURA_INVALIDA",
+                    "Solo se puede emitir boleto con factura ABI.");
+
+            // ============================================================
             // 🔥 Generar código
             // ============================================================
             var codigo = $"BT-{System.DateTime.UtcNow:yyyyMMdd}-{System.Guid.NewGuid().ToString("N")[..6].ToUpper()}";
@@ -91,9 +115,23 @@ namespace Microservicio.Vuelos.Business.Services
             // ============================================================
             // 🔥 Calcular precios (BACKEND MANDA)
             // ============================================================
-            decimal precioBase = vuelo.PrecioBase;
-            decimal impuestos = (precioBase + precioExtra) * 0.12m;
-            decimal total = precioBase + precioExtra + impuestos;
+            // ============================================================
+            // 🔥 NUEVA LÓGICA CORRECTA (SUBTOTAL + IVA 15% + EXTRAS)
+            // ============================================================
+
+            // 🔹 base real viene de la factura
+            decimal subtotal = factura.Subtotal;
+
+            // 🔹 extra asiento (si existe)
+            decimal precioAsiento = asiento?.PrecioExtra ?? 0;
+
+            // 🔹 equipaje inicia en 0
+            decimal cargoEquipaje = 0;
+
+            // 🔹 IVA 15%
+            decimal subtotalCompleto = subtotal + precioAsiento + cargoEquipaje;
+            decimal iva = subtotalCompleto * 0.15m;
+            decimal total = subtotalCompleto + iva;
 
             // ============================================================
             // 🔥 Crear modelo
@@ -101,12 +139,22 @@ namespace Microservicio.Vuelos.Business.Services
             var dataModel = BoletoBusinessMapper.ToDataModel(request);
 
             dataModel.CodigoBoleto = codigo;
-            dataModel.PrecioVueloBase = precioBase;
-            dataModel.PrecioAsientoExtra = precioExtra;
-            dataModel.ImpuestosBoleto = impuestos;
+            dataModel.PrecioVueloBase = subtotal;
+            dataModel.PrecioAsientoExtra = precioAsiento;
+            dataModel.ImpuestosBoleto = iva;
+            dataModel.CargoEquipaje = cargoEquipaje;
             dataModel.PrecioFinal = total;
 
             var creado = await _boletoDataService.CreateAsync(dataModel);
+
+            // ============================================================
+            // 🔥 CAMBIAR RESERVA A EMI
+            // ============================================================
+            if (reserva.EstadoReserva == "CON")
+            {
+                reserva.EstadoReserva = "EMI";
+                await _reservaDataService.UpdateAsync(reserva);
+            }
 
             // ============================================================
             // 🔥 Marcar asiento ocupado SOLO SI EXISTE

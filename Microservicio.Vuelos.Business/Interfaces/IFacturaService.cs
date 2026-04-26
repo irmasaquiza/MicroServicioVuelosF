@@ -44,5 +44,6 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================
         Task<bool> EliminarAsync(int id);
+
     }
 }

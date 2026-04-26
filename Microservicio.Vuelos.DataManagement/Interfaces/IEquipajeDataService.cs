@@ -31,6 +31,8 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
         // ✏️ Actualizar
         Task<bool> UpdateAsync(EquipajeDataModel model);
 
+        Task<decimal> SumPrecioByBoletoAsync(int idBoleto);
+
         // ❌ Eliminación lógica
         Task<bool> DeleteAsync(int id);
     }

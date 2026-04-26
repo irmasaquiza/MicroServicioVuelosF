@@ -27,6 +27,7 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // ============================================================
         Task<bool> CambiarEstadoAsync(int idEquipaje, string estado);
 
+
         // ============================================================
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================

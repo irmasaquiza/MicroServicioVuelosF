@@ -114,6 +114,18 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
         }
 
+        [HttpPatch("{id_factura}/aprobar")]
+        public async Task<IActionResult> Aprobar(int id_factura)
+        {
+            await _facturaService.CambiarEstadoAsync(id_factura, "APR");
+
+            return Ok(new
+            {
+                success = true,
+                mensaje = "Factura aprobada correctamente."
+            });
+        }
+
         // ============================================================
         // ANULAR
         // ============================================================

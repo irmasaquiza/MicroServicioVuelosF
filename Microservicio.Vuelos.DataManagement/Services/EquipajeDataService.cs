@@ -316,5 +316,28 @@ namespace Microservicio.Vuelos.DataManagement.Services
 
             return true;
         }
+
+
+        // ─────────────────────────────────────────────
+        // 🔥 SUMAR PRECIO DE EQUIPAJE POR BOLETO
+        // ─────────────────────────────────────────────
+        public async Task<decimal> SumPrecioByBoletoAsync(int idBoleto)
+        {
+            if (idBoleto <= 0)
+                throw new ArgumentException(
+                    "El ID del boleto debe ser mayor a 0.", nameof(idBoleto));
+
+            var equipajes = await _uow.EquipajeRepository.GetByBoletoAsync(idBoleto);
+
+            if (equipajes == null || !equipajes.Any())
+                return 0;
+
+            return equipajes
+                .Where(e => !e.EsEliminado)
+                .Sum(e => e.PrecioExtra);
+        }
+
+
+
     }
 }
