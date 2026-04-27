@@ -20,17 +20,19 @@ namespace Microservicio.Vuelos.Business.Services
         private readonly IUsuarioRolDataService _usuarioRolDataService;
         private readonly IRolDataService _rolDataService;
         private readonly IConfiguration _config;
-
+        private readonly IClienteDataService _clienteDataService; // ✔ AQUÍ
         public AuthService(
             IUsuarioAppDataService usuarioDataService,
             IUsuarioRolDataService usuarioRolDataService,
             IRolDataService rolDataService,
+            IClienteDataService clienteDataService,
             IConfiguration config)
         {
             _usuarioDataService = usuarioDataService;
             _usuarioRolDataService = usuarioRolDataService;
             _rolDataService = rolDataService;
             _config = config;
+            _clienteDataService = clienteDataService;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -134,6 +136,57 @@ namespace Microservicio.Vuelos.Business.Services
                 signingCredentials: credentials);
 
             return (new JwtSecurityTokenHandler().WriteToken(token), expira);   
+        }
+
+
+        public async Task<bool> RegisterAsync(RegisterRequest request)
+        {
+            if (request == null)
+                throw new ValidationException("La solicitud es requerida.");
+
+            // 🔥 validar correo duplicado
+            var existe = await _usuarioDataService.GetByCredentialsAsync(request.Correo);
+            if (existe != null)
+                throw new BusinessException("USUARIO_EXISTE", "El correo ya está registrado.");
+
+            // 🔥 1. crear cliente (mínimo funcional)
+            var cliente = await _clienteDataService.CreateAsync(new DataManagement.Models.ClienteDataModel
+            {
+                TipoIdentificacion = "CEDULA", // 🔥 puedes hardcodear por ahora
+                NumeroIdentificacion = request.Identificacion,
+                Nombres = request.Nombre,
+                Apellidos = request.Apellido,
+                RazonSocial = null,
+                Correo = request.Correo,
+                Telefono = request.Telefono,
+                Direccion = "N/A",
+                IdCiudadResidencia = 1,       // 🔥 usa valores por defecto
+                IdPaisNacionalidad = 1,
+                FechaNacimiento = DateTime.UtcNow.AddYears(-20),
+                Nacionalidad = "ECUATORIANA",
+                Genero = "OTRO"
+            });
+
+            // 🔥 2. crear usuario
+            var usuario = await _usuarioDataService.CreateAsync(new DataManagement.Models.UsuarioAppDataModel
+            {
+                IdCliente = cliente.IdCliente,
+                Username = request.Username,
+                Correo = request.Correo,
+                PasswordHash = request.Password,
+                EstadoUsuario = "ACT",
+                Activo = true
+            });
+
+            // 🔥 3. asignar rol CLIENTE
+            await _usuarioRolDataService.CreateAsync(new DataManagement.Models.UsuarioRolDataModel
+            {
+                IdUsuario = usuario.IdUsuario,
+                IdRol = 2,
+                Activo = true
+            });
+
+            return true;
         }
     }
 }

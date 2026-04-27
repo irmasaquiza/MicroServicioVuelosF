@@ -72,5 +72,12 @@ namespace Microservicio.Vuelos.DataAccess.Repositories
             asiento.Eliminado = true;
             _context.Asientos.Update(asiento);
         }
+
+
+        public async Task AddRangeAsync(IEnumerable<AsientoEntity> entities)
+        {
+            _context.Asientos.AddRange(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }

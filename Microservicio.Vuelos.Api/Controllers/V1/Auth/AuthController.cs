@@ -34,5 +34,24 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Auth
                 Data = result
             });
         }
+
+
+        // POST: api/v1/auth/register
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            await _authService.RegisterAsync(request);
+
+            return Ok(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Usuario registrado correctamente",
+                Data = null
+            });
+        }
+
+
+
     }
 }

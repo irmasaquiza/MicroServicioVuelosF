@@ -41,6 +41,19 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Vuelo
         [Required]
         [Range(1, int.MaxValue)]
         public int CapacidadTotal { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int CapacidadPrimera { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int CapacidadEjecutiva { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int CapacidadEconomica { get; set; }
+
     }
  
 

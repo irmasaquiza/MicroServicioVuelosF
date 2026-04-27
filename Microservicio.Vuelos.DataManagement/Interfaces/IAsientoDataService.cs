@@ -30,5 +30,7 @@ namespace Microservicio.Vuelos.DataManagement.Interfaces
 
         // ❌ Eliminación lógica
         Task<bool> DeleteAsync(int id);
+
+        Task CreateRangeAsync(IEnumerable<AsientoDataModel> asientos);
     }
 }

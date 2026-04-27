@@ -30,5 +30,7 @@ namespace Microservicio.Vuelos.DataAccess.Repositories.Interfaces
 
         // ❌ Eliminación lógica
         void Delete(AsientoEntity asiento);
+
+        Task AddRangeAsync(IEnumerable<AsientoEntity> entities);
     }
 }

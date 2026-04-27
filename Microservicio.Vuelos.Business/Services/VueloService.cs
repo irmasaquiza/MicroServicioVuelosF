@@ -34,6 +34,7 @@ namespace Microservicio.Vuelos.Business.Services
         {
             VueloValidator.ValidarCrear(request);
 
+
             var todos = await _vueloDataService.GetAllAsync();
 
             var existente = todos.FirstOrDefault(v =>
@@ -46,7 +47,7 @@ namespace Microservicio.Vuelos.Business.Services
 
             var dataModel = VueloBusinessMapper.ToDataModel(request);
             var creado = await _vueloDataService.CreateAsync(dataModel);
-
+            await GenerarAsientos(creado.IdVuelo, request);
             return VueloBusinessMapper.ToResponse(creado);
         }
 
@@ -188,6 +189,8 @@ namespace Microservicio.Vuelos.Business.Services
             return true;
         }
 
+
+
         // ============================================================
         // DELETE
         // ============================================================
@@ -206,5 +209,60 @@ namespace Microservicio.Vuelos.Business.Services
 
             return true;
         }
+
+        private async Task GenerarAsientos(int idVuelo, CrearVueloRequest request)
+        {
+            var asientos = new List<AsientoDataModel>();
+
+            int total = request.CapacidadTotal;
+
+            // 🔥 distribución automática
+            int primera = (int)(total * 0.15);     // 15%
+            int ejecutiva = (int)(total * 0.35);   // 35%
+            int economica = total - primera - ejecutiva;
+
+            // 🔹 PRIMERA
+            for (int i = 1; i <= primera; i++)
+            {
+                asientos.Add(new AsientoDataModel
+                {
+                    IdVuelo = idVuelo,
+                    NumeroAsiento = $"A{i}",
+                    Clase = "PRIMERA",
+                    PrecioExtra = 100,
+                    Disponible = true
+                });
+            }
+
+            // 🔹 EJECUTIVA
+            for (int i = 1; i <= ejecutiva; i++)
+            {
+                asientos.Add(new AsientoDataModel
+                {
+                    IdVuelo = idVuelo,
+                    NumeroAsiento = $"B{i}",
+                    Clase = "EJECUTIVA",
+                    PrecioExtra = 50,
+                    Disponible = true
+                });
+            }
+
+            // 🔹 ECONOMICA
+            for (int i = 1; i <= economica; i++)
+            {
+                asientos.Add(new AsientoDataModel
+                {
+                    IdVuelo = idVuelo,
+                    NumeroAsiento = $"C{i}",
+                    Clase = "ECONOMICA",
+                    PrecioExtra = 0,
+                    Disponible = true
+                });
+            }
+
+            await _asientoDataService.CreateRangeAsync(asientos);
+        }
+
+
     }
 }

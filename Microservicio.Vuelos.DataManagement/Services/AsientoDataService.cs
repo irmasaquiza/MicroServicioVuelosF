@@ -189,5 +189,28 @@ namespace Microservicio.Vuelos.DataManagement.Services
 
             return true;
         }
+        public async Task CreateRangeAsync(IEnumerable<AsientoDataModel> asientos)
+        {
+            if (asientos == null || !asientos.Any())
+                return;
+
+            var entities = asientos.Select(model =>
+            {
+                var entity = AsientoDataMapper.ToEntity(model);
+
+                // 🔥 Auditoría (igual que CreateAsync)
+                entity.FechaRegistroUtc = DateTime.UtcNow;
+                entity.CreadoPorUsuario = "SYSTEM";
+                entity.Eliminado = false;
+
+                return entity;
+            }).ToList();
+
+            await _uow.AsientoRepository.AddRangeAsync(entities);
+            await _uow.SaveChangesAsync();
+        }
+
+
     }
+
 }
