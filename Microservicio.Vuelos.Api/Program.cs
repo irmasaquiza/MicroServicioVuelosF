@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // ============================================================
 
 // Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 
 // 🔥 EXTENSIONS
 builder.Services.AddProjectServices(builder.Configuration); builder.Services.AddSwaggerExtension(); // Swagger + JWT
@@ -27,10 +31,9 @@ var app = builder.Build();
 // ============================================================
 
 // Swagger (solo en desarrollo recomendado)
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerExtension();
-}
+
+ app.UseSwaggerExtension();
+
 
 // Middleware global de errores
 app.UseMiddleware<ExceptionHandlingMiddleware>();
