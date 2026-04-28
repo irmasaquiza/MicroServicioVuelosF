@@ -71,6 +71,18 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+
+                    throw new ValidationException(errores);
+                }
+
                 var result = await _pasajeroService.CrearAsync(request);
 
                 return CreatedAtAction(nameof(GetById),
@@ -79,7 +91,11 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             }
             catch (ValidationException ex)
             {
-                return BadRequest(ApiErrorResponse.FromValidation(ex));
+                return BadRequest(new
+                {
+                    mensaje = ex.Message,
+                    errores = ex.Errores
+                });
             }
             catch (BusinessException ex)
             {

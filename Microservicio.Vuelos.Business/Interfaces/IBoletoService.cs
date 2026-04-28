@@ -17,6 +17,9 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // ============================================================
         Task<BoletoResponse> GetByIdAsync(int id);
 
+        Task<IEnumerable<BoletoResponse>> GetByUsuarioAsync(int idUsuario);
+
+
         // ============================================================
         // 🔥 LISTAR POR RESERVA
         // ============================================================

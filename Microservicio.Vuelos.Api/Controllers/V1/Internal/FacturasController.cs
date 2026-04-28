@@ -6,7 +6,8 @@ using Microservicio.Vuelos.Business.DTOs.Common;
 using Microservicio.Vuelos.Business.DTOs.Internal.Factura;
 using Microservicio.Vuelos.Business.Exceptions;
 using Microservicio.Vuelos.Business.Interfaces;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
 {
     [ApiController]
@@ -115,8 +116,17 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
         }
 
         [HttpPatch("{id_factura}/aprobar")]
+        [Authorize(Roles = "ADMINISTRADOR,CLIENTE")]
         public async Task<IActionResult> Aprobar(int id_factura)
         {
+            var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(idClaim))
+                return Unauthorized();
+
+            var idUsuario = int.Parse(idClaim);
+
             await _facturaService.CambiarEstadoAsync(id_factura, "APR");
 
             return Ok(new

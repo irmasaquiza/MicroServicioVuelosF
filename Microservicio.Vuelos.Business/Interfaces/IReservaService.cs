@@ -26,6 +26,8 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // (incluye boletos + facturas)
         // ============================================================
         Task<ReservaDetalleResponse> GetDetalleAsync(int id);
+        Task ConfirmarAsync(int idReserva, int idUsuario);
+        Task CancelarClienteAsync(int idReserva, int idUsuario);
 
         // ============================================================
         // 🔥 LISTAR POR CLIENTE
@@ -36,6 +38,7 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 FILTRAR
         // ============================================================
         Task<IEnumerable<ReservaResponse>> FiltrarAsync(ReservaFiltroRequest request);
+        Task<IEnumerable<ReservaResponse>> GetByUsuarioAsync(int idUsuario);
 
         // ============================================================
         // 🔥 ACTUALIZAR
@@ -57,5 +60,8 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================
         Task<bool> EliminarAsync(int id);
+
+
+
     }
 }

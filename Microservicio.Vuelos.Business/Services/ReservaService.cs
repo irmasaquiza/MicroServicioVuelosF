@@ -18,19 +18,21 @@ namespace Microservicio.Vuelos.Business.Services
         private readonly IFacturaDataService _facturaDataService;
         private readonly IAsientoDataService _asientoDataService;
         private readonly IVueloDataService _vueloDataService;
-
+        private readonly IUsuarioAppDataService _usuarioDataService;
         public ReservaService(
             IReservaDataService reservaDataService,
             IBoletoDataService boletoDataService,
             IFacturaDataService facturaDataService,
             IAsientoDataService asientoDataService,
-            IVueloDataService vueloDataService)
+            IVueloDataService vueloDataService,
+            IUsuarioAppDataService usuarioDataService)
         {
             _reservaDataService = reservaDataService;
             _boletoDataService = boletoDataService;
             _facturaDataService = facturaDataService;
             _asientoDataService = asientoDataService;
             _vueloDataService = vueloDataService;
+            _usuarioDataService = usuarioDataService;
         }
 
         // ============================================================
@@ -39,14 +41,16 @@ namespace Microservicio.Vuelos.Business.Services
         public async Task<ReservaResponse> CrearAsync(CrearReservaRequest request)
         {
             ReservaValidator.ValidarCrear(request);
-
-            if (request.FechaFin <= request.FechaInicio)
-                throw new BusinessException("FECHAS_INVALIDAS",
-                    "La fecha fin debe ser mayor a la fecha inicio.");
-
             var vuelo = await _vueloDataService.GetByIdAsync(request.IdVuelo);
+
             if (vuelo == null)
-                throw new BusinessException("VUELO_NO_ENCONTRADO");
+                throw new BusinessException("El vuelo no existe");
+
+            // 👇 recién aquí puedes usarlo
+            request.FechaInicio = vuelo.FechaHoraSalida;
+            request.FechaFin = vuelo.FechaHoraLlegada;
+
+
 
             if (vuelo.EstadoVuelo == "CANCELADO")
                 throw new BusinessException("VUELO_CANCELADO");
@@ -62,6 +66,38 @@ namespace Microservicio.Vuelos.Business.Services
             if (asiento.IdVuelo != request.IdVuelo)
                 throw new BusinessException("ASIENTO_NO_CORRESPONDE");
 
+            var usuario = await _usuarioDataService.GetByIdAsync(request.IdUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            // 🔥 DIFERENCIAR CLIENTE VS ADMIN
+            if (usuario.IdCliente.HasValue)
+            {
+                // 👤 CLIENTE
+                request.IdCliente = usuario.IdCliente.Value;
+            }
+            else
+            {
+                // 👨‍💼 ADMIN
+                if (request.IdCliente <= 0)
+                    throw new BusinessException("CLIENTE_REQUERIDO",
+                        "El administrador debe enviar un cliente válido.");
+            }
+            // 🔥 CALCULAR PRECIOS
+            decimal precioBase = vuelo.PrecioBase;
+            decimal extraAsiento = asiento.PrecioExtra;
+
+            decimal subtotal = precioBase + extraAsiento;
+            const decimal IVA = 0.12m;
+            decimal iva = subtotal * IVA;
+            decimal total = subtotal + iva;
+
+            request.SubtotalReserva = subtotal;
+            request.ValorIva = iva;
+            request.TotalReserva = total;
+                
+
             var dataModel = ReservaBusinessMapper.ToDataModel(request);
             dataModel.CodigoReserva = $"RES-{System.DateTime.UtcNow:yyyyMMdd}-{System.Guid.NewGuid().ToString("N")[..6]}";
 
@@ -72,6 +108,94 @@ namespace Microservicio.Vuelos.Business.Services
             await _asientoDataService.UpdateAsync(asiento);
 
             return ReservaBusinessMapper.ToResponse(creada);
+        }
+
+        public async Task<IEnumerable<ReservaResponse>> GetByUsuarioAsync(int idUsuario)
+        {
+            // 🔥 1. obtener usuario
+            var usuario = await _usuarioDataService.GetByIdAsync(idUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            if (!usuario.IdCliente.HasValue)
+                throw new BusinessException("USUARIO_SIN_CLIENTE");
+
+            var idCliente = usuario.IdCliente.Value;
+
+            // 🔥 2. obtener reservas del cliente
+            var reservas = await _reservaDataService.GetByClienteAsync(idCliente);
+
+            // 🔥 3. mapear
+            return reservas.Select(ReservaBusinessMapper.ToResponse);
+        }
+
+
+        public async Task ConfirmarAsync(int idReserva, int idUsuario)
+        {
+            var reserva = await _reservaDataService.GetByIdAsync(idReserva);
+
+            if (reserva == null)
+                throw new BusinessException("RESERVA_NO_ENCONTRADA");
+
+            if (reserva.EstadoReserva != "PEN")
+                throw new BusinessException("SOLO_RESERVAS_PENDIENTES");
+
+            var usuario = await _usuarioDataService.GetByIdAsync(idUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            if (!usuario.IdCliente.HasValue)
+                throw new BusinessException("USUARIO_SIN_CLIENTE");
+
+            // 🔥 VALIDACIÓN CORRECTA
+            if (reserva.IdCliente != usuario.IdCliente.Value)
+                throw new BusinessException("NO_AUTORIZADO");
+
+            await CambiarEstadoAsync(idReserva, new ActualizarEstadoReservaRequest
+            {
+                EstadoReserva = "CON"
+            });
+        }
+
+        public async Task CancelarClienteAsync(int idReserva, int idUsuario)
+        {
+            var reserva = await _reservaDataService.GetByIdAsync(idReserva);
+
+            if (reserva == null)
+                throw new BusinessException("RESERVA_NO_ENCONTRADA");
+
+            // 🔥 solo puede cancelar si está pendiente o confirmada
+            if (reserva.EstadoReserva != "PEN" && reserva.EstadoReserva != "CON")
+                throw new BusinessException("NO_SE_PUEDE_CANCELAR");
+
+            // 🔥 obtener usuario
+            var usuario = await _usuarioDataService.GetByIdAsync(idUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            if (!usuario.IdCliente.HasValue)
+                throw new BusinessException("USUARIO_SIN_CLIENTE");
+
+            // 🔥 VALIDACIÓN CORRECTA (cliente dueño)
+            if (reserva.IdCliente != usuario.IdCliente.Value)
+                throw new BusinessException("NO_AUTORIZADO");
+
+            // 🔥 liberar asiento    
+            var asiento = await _asientoDataService.GetByIdAsync(reserva.IdAsiento);
+
+            if (asiento != null)
+            {
+                asiento.Disponible = true;
+                await _asientoDataService.UpdateAsync(asiento);
+            }
+
+            // 🔥 cambiar estado
+            reserva.EstadoReserva = "CAN";
+
+            await _reservaDataService.UpdateAsync(reserva);
         }
 
         // ============================================================
@@ -188,7 +312,7 @@ namespace Microservicio.Vuelos.Business.Services
 
                     var factura = new FacturaDataModel
                     {
-                        IdCliente = model.IdCliente, // 🔥 ESTA ES LA CLAVE
+                        IdCliente = model.IdCliente,
                         IdReserva = id,
                         NumeroFactura = numeroFactura,
                         FechaEmision = DateTime.UtcNow,
@@ -206,7 +330,47 @@ namespace Microservicio.Vuelos.Business.Services
 
                     await _facturaDataService.CreateAsync(factura);
                 }
+
+                // 🔥 GENERAR BOLETO AQUÍ (CORRECTO)
+                var boletos = await _boletoDataService.GetByReservaAsync(id);
+
+                if (boletos == null || !boletos.Any())
+                {
+                    var codigoBoleto = $"BOL-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+                    var asiento = await _asientoDataService.GetByIdAsync(model.IdAsiento);
+                    var vuelo = await _vueloDataService.GetByIdAsync(model.IdVuelo);
+
+                    var facturasActualizadas = await _facturaDataService.GetByReservaAsync(id);
+                    var factura = facturasActualizadas.First();
+
+                    var boleto = new BoletoDataModel
+                    {
+                        IdReserva = id,
+                        IdVuelo = model.IdVuelo,
+                        IdAsiento = model.IdAsiento,
+                        IdFactura = factura.IdFactura,
+
+                        CodigoBoleto = codigoBoleto,
+                        Clase = asiento?.Clase ?? "ECONOMICA",
+                        EstadoBoleto = "ACTIVO",
+                        FechaEmision = DateTime.UtcNow,
+
+                        PrecioVueloBase = vuelo.PrecioBase,
+                        PrecioAsientoExtra = asiento?.PrecioExtra ?? 0,
+                        ImpuestosBoleto = model.ValorIva,
+                        CargoEquipaje = 0,
+
+                        PrecioFinal = model.TotalReserva
+                    };
+
+                    await _boletoDataService.CreateAsync(boleto);
+                }
             }
+
+
+
+
 
             // ============================================================
             // 🔥 VALIDAR FIN SOLO SI EL VUELO ATERRIZÓ
@@ -224,13 +388,20 @@ namespace Microservicio.Vuelos.Business.Services
                         "No se puede finalizar la reserva si el vuelo no ha aterrizado.");
             }
 
+
+
             // 🔥 aplicar cambio
             model.EstadoReserva = nuevoEstado;
 
             await _reservaDataService.UpdateAsync(model);
 
             return true;
+
+
+
         }
+
+
 
         // ============================================================
         // CANCELAR

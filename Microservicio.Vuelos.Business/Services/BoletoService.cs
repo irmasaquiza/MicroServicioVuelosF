@@ -12,8 +12,7 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
-using Microservicio.Vuelos.DataManagement.Interfaces; // 🔥 1. AGREGAR DEPENDENCIA
-
+ 
 namespace Microservicio.Vuelos.Business.Services
 {
     public class BoletoService : IBoletoService
@@ -23,19 +22,24 @@ namespace Microservicio.Vuelos.Business.Services
         private readonly IVueloDataService _vueloDataService;
         private readonly IAsientoDataService _asientoDataService;
         private readonly IFacturaDataService _facturaDataService; // 🔥 1. NUEVA DEPENDENCIA
-
+        private readonly IUsuarioAppDataService _usuarioDataService;
         public BoletoService(
             IBoletoDataService boletoDataService,
             IReservaDataService reservaDataService,
             IVueloDataService vueloDataService,
             IAsientoDataService asientoDataService,
-            IFacturaDataService facturaDataService) // 🔥 1. NUEVO PARÁMETRO
+            IFacturaDataService facturaDataService,
+            IUsuarioAppDataService usuarioDataService // 👈 CAMBIO
+
+            ) // 🔥 1. NUEVO PARÁMETRO
         {
             _boletoDataService = boletoDataService;
             _reservaDataService = reservaDataService;
             _vueloDataService = vueloDataService;
             _asientoDataService = asientoDataService;
             _facturaDataService = facturaDataService; // 🔥 1. ASIGNACIÓN
+            _usuarioDataService = usuarioDataService; // 👈 NUEVO
+
         }
 
         // ============================================================
@@ -91,16 +95,14 @@ namespace Microservicio.Vuelos.Business.Services
             // 🔥 VALIDAR FACTURA (SOLO ABI)
             // ============================================================
             var factura = await _facturaDataService.GetByIdAsync(request.IdFactura);
-            // ============================================================
-            // 🔥 VALIDAR QUE FACTURA PERTENECE A LA RESERVA
-            // ============================================================
-            if (factura.IdReserva != request.IdReserva)
-                throw new BusinessException("FACTURA_RESERVA_INVALIDA",
-                    "La factura no pertenece a la reserva.");
 
             if (factura == null)
                 throw new BusinessException("FACTURA_NO_ENCONTRADA",
                     $"No existe la factura '{request.IdFactura}'.");
+
+            if (factura.IdReserva != request.IdReserva)
+                throw new BusinessException("FACTURA_RESERVA_INVALIDA",
+                    "La factura no pertenece a la reserva.");
 
             // ⚠️ usa Estado (no EstadoFactura)
             if (factura.Estado != "ABI")
@@ -264,6 +266,7 @@ namespace Microservicio.Vuelos.Business.Services
             return true;
         }
 
+
         // ============================================================
         // ELIMINAR
         // ============================================================
@@ -279,6 +282,40 @@ namespace Microservicio.Vuelos.Business.Services
 
             await _boletoDataService.DeleteAsync(id);
             return true;
+        }
+
+
+        // ============================================================
+        // 🔥 BOLETOS DEL USUARIO (MIS BOLETOS)
+        // ============================================================
+        public async Task<IEnumerable<BoletoResponse>> GetByUsuarioAsync(int idUsuario)
+        {
+            // 🔥 1. obtener usuario
+            var usuario = await _usuarioDataService.GetByIdAsync(idUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            if (!usuario.IdCliente.HasValue)
+                throw new BusinessException("USUARIO_SIN_CLIENTE");
+
+            var idCliente = usuario.IdCliente.Value;
+
+            // 🔥 2. obtener reservas del cliente
+            var reservas = await _reservaDataService.GetByClienteAsync(idCliente);
+
+            var idsReservas = reservas.Select(r => r.IdReserva).ToList();
+
+            // 🔥 3. obtener boletos
+            var boletos = await _boletoDataService.GetAllAsync();
+
+            // 🔥 4. filtrar por reservas del cliente
+            var filtrados = boletos
+                .Where(b => idsReservas.Contains(b.IdReserva))
+                .ToList();
+
+            // 🔥 5. mapear
+            return filtrados.Select(BoletoBusinessMapper.ToResponse);
         }
     }
 }

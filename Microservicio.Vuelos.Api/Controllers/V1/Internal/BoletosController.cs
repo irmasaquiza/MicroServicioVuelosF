@@ -1,7 +1,8 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microservicio.Vuelos.Business.DTOs.Common;
 using Microservicio.Vuelos.Business.DTOs.Internal.Boleto;
 using Microservicio.Vuelos.Business.DTOs.Internal.Equipaje;
@@ -51,6 +52,38 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
                 });
             }
         }
+
+        // ============================================================
+        // 🔥 MIS BOLETOS (CLIENTE)
+        // ============================================================
+        [HttpGet("mis-boletos")]
+        public async Task<IActionResult> GetMisBoletos()
+        {
+            try
+            {
+                var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                           ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+                if (string.IsNullOrEmpty(idClaim))
+                    throw new Exception("No se pudo obtener el idUsuario del token");
+
+                var idUsuario = int.Parse(idClaim);
+
+                var result = await _boletoService.GetByUsuarioAsync(idUsuario);
+
+                return Ok(ApiResponse<IEnumerable<BoletoResponse>>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    mensaje = ex.Message
+                });
+            }
+        }
+
 
         // ============================================================
         // GET: api/v1/boletos/{id}

@@ -182,7 +182,7 @@ namespace Microservicio.Vuelos.Business.Services
             await _usuarioRolDataService.CreateAsync(new DataManagement.Models.UsuarioRolDataModel
             {
                 IdUsuario = usuario.IdUsuario,
-                IdRol = 2,
+                IdRol = 3,
                 Activo = true
             });
 

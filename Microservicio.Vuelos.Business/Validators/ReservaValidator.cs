@@ -43,8 +43,8 @@ namespace Microservicio.Vuelos.Business.Validators
                 throw new ValidationException("La solicitud es requerida.");
 
             // IDs
-            if (request.IdCliente <= 0)
-                errors.Add("El cliente es obligatorio");
+          //  if (request.IdCliente <= 0)
+          //      errors.Add("El cliente es obligatorio");
 
             if (request.IdPasajero <= 0)
                 errors.Add("El pasajero es obligatorio");
@@ -56,16 +56,16 @@ namespace Microservicio.Vuelos.Business.Validators
                 errors.Add("El asiento es obligatorio");
 
             // Fechas
-            if (request.FechaInicio == default)
-                errors.Add("La fecha de inicio es obligatoria");
+         //   if (request.FechaInicio == default)
+         //       errors.Add("La fecha de inicio es obligatoria");
 
-            if (request.FechaFin == default)
-                errors.Add("La fecha de fin es obligatoria");
+           // if (request.FechaFin == default)
+           //     errors.Add("La fecha de fin es obligatoria");
 
-            if (request.FechaInicio != default &&
-                request.FechaFin != default &&
-                request.FechaInicio > request.FechaFin)
-                errors.Add("La fecha de inicio no puede ser mayor a la fecha de fin");
+//            if (request.FechaInicio != default &&
+//                request.FechaFin != default &&
+//                request.FechaInicio > request.FechaFin)
+//                errors.Add("La fecha de inicio no puede ser mayor a la fecha de fin");
 
             // Valores
             if (request.SubtotalReserva < 0)
@@ -78,10 +78,10 @@ namespace Microservicio.Vuelos.Business.Validators
                 errors.Add("El total no puede ser negativo");
 
             // 💀 Regla clave
-            var totalEsperado = request.SubtotalReserva + request.ValorIva;
+//            var totalEsperado = request.SubtotalReserva + request.ValorIva;
 
-            if (request.TotalReserva != totalEsperado)
-                errors.Add("El total debe ser igual a Subtotal + IVA");
+//            if (request.TotalReserva != totalEsperado)
+//                errors.Add("El total debe ser igual a Subtotal + IVA");
 
             // Canal
             if (!string.IsNullOrWhiteSpace(request.OrigenCanalReserva) &&

@@ -18,10 +18,15 @@ namespace Microservicio.Vuelos.Business.Services
     public class FacturaService : IFacturaService
     {
         private readonly IFacturaDataService _facturaDataService;
+        private readonly IUsuarioAppDataService _usuarioDataService;
 
-        public FacturaService(IFacturaDataService facturaDataService)
+        public FacturaService(
+            IFacturaDataService facturaDataService,
+            IUsuarioAppDataService usuarioDataService
+        )
         {
             _facturaDataService = facturaDataService;
+            _usuarioDataService = usuarioDataService;
         }
 
         // ============================================================
@@ -164,5 +169,38 @@ namespace Microservicio.Vuelos.Business.Services
 
             return true;
         }
+
+        public async Task AprobarAsync(int idFactura, int idUsuario)
+        {
+            // 🔥 1. obtener factura
+            var factura = await _facturaDataService.GetByIdAsync(idFactura);
+
+            if (factura == null)
+                throw new BusinessException("FACTURA_NO_ENCONTRADA");
+
+            if (factura.Estado == "APR")
+                throw new BusinessException("FACTURA_YA_APROBADA");
+
+            // 🔥 2. obtener usuario
+            var usuario = await _usuarioDataService.GetByIdAsync(idUsuario);
+
+            if (usuario == null)
+                throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+            // 🔥 3. VALIDACIÓN CLAVE
+            if (usuario.IdCliente.HasValue)
+            {
+                // 👤 CLIENTE → solo su factura
+                if (factura.IdCliente != usuario.IdCliente.Value)
+                    throw new BusinessException("NO_AUTORIZADO");
+            }
+            // 👨‍💼 ADMIN → puede aprobar cualquiera
+
+            // 🔥 4. CAMBIAR ESTADO (PAGO)
+            factura.Estado = "APR";
+
+            await _facturaDataService.UpdateAsync(factura);
+        }
+
     }
 }

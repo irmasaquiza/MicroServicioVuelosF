@@ -9,10 +9,10 @@ namespace Microservicio.Vuelos.Business.DTOs.Internal.Reserva
 {
     public class CrearReservaRequest
     {
-        [Required]
-        [Range(1, int.MaxValue)]
+//        [Required]
+//        [Range(1, int.MaxValue)]
         public int IdCliente { get; set; }
-
+        public int IdUsuario { get; set; } // 🔥 se llena en controller
         [Required]
         [Range(1, int.MaxValue)]
         public int IdPasajero { get; set; }

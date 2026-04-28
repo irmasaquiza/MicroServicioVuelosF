@@ -35,6 +35,8 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // ============================================================
         Task<FacturaResponse> ActualizarAsync(int id, ActualizarFacturaRequest request);
 
+        Task AprobarAsync(int idFactura, int idUsuario);
+
         // ============================================================
         // 🔥 CAMBIAR ESTADO (ABI / APR / INA)
         // ============================================================
