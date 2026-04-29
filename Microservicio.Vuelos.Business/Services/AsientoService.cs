@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microservicio.Vuelos.Business.DTOs.Booking.Asiento;
 using Microservicio.Vuelos.Business.DTOs.Internal.Asiento;
 using Microservicio.Vuelos.Business.Exceptions;
 using Microservicio.Vuelos.Business.Interfaces;
@@ -8,6 +6,11 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.DataManagement.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Asiento;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -124,5 +127,32 @@ namespace Microservicio.Vuelos.Business.Services
             await _asientoDataService.DeleteAsync(id);
             return true;
         }
+
+
+
+
+public async Task<IEnumerable<AsientoBookingResponse>> GetAsientosBookingAsync(int idVuelo, bool? disponible, string clase)
+    {
+        var asientos = await _asientoDataService.GetByVueloAsync(idVuelo);
+
+        var filtrados = asientos.AsQueryable();
+
+        if (disponible.HasValue)
+            filtrados = filtrados.Where(a => a.Disponible == disponible.Value);
+
+        if (!string.IsNullOrEmpty(clase))
+            filtrados = filtrados.Where(a => a.Clase == clase);
+
+        return filtrados.Select(a => new AsientoBookingResponse
+        {
+            IdAsiento = a.IdAsiento,
+            IdVuelo = a.IdVuelo,
+            NumeroAsiento = a.NumeroAsiento,
+            Clase = a.Clase,
+            Disponible = a.Disponible,
+            PrecioExtra = a.PrecioExtra,
+            Posicion = a.Posicion
+        });
     }
+}
 }

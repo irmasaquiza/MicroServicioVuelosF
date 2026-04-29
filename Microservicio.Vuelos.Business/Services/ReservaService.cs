@@ -8,6 +8,7 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.Business.DTOs.Booking.Reserva;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -65,13 +66,15 @@ namespace Microservicio.Vuelos.Business.Services
 
             if (asiento.IdVuelo != request.IdVuelo)
                 throw new BusinessException("ASIENTO_NO_CORRESPONDE");
-
+            /*
             var usuario = await _usuarioDataService.GetByIdAsync(request.IdUsuario);
 
             if (usuario == null)
                 throw new BusinessException("USUARIO_NO_ENCONTRADO");
 
             // 🔥 DIFERENCIAR CLIENTE VS ADMIN
+
+            
             if (usuario.IdCliente.HasValue)
             {
                 // 👤 CLIENTE
@@ -84,6 +87,35 @@ namespace Microservicio.Vuelos.Business.Services
                     throw new BusinessException("CLIENTE_REQUERIDO",
                         "El administrador debe enviar un cliente válido.");
             }
+
+            */
+
+            // 🔥 SI VIENE USUARIO (flujo normal)
+            if (request.IdUsuario > 0)
+            {
+                var usuario = await _usuarioDataService.GetByIdAsync(request.IdUsuario);
+
+                if (usuario == null)
+                    throw new BusinessException("USUARIO_NO_ENCONTRADO");
+
+                if (usuario.IdCliente.HasValue)
+                {
+                    request.IdCliente = usuario.IdCliente.Value;
+                }
+                else
+                {
+                    if (request.IdCliente <= 0)
+                        throw new BusinessException("CLIENTE_REQUERIDO");
+                }
+            }
+            else
+            {
+                // 🔥 flujo BOOKING (sin usuario)
+                if (request.IdCliente <= 0)
+                    throw new BusinessException("CLIENTE_REQUERIDO");
+            }
+
+
             // 🔥 CALCULAR PRECIOS
             decimal precioBase = vuelo.PrecioBase;
             decimal extraAsiento = asiento.PrecioExtra;
@@ -432,5 +464,63 @@ namespace Microservicio.Vuelos.Business.Services
 
             return true;
         }
+
+        // booking
+
+        public async Task<ReservaBookingResponse> CrearBookingAsync(CrearReservaBookingRequest request)
+        {
+            // 🔥 crear request interno
+            var internalRequest = new CrearReservaRequest
+            {
+                IdCliente = request.IdCliente,
+                IdPasajero = request.IdPasajero,
+                IdVuelo = request.IdVuelo,
+                IdAsiento = request.IdAsiento,
+                FechaInicio = request.FechaInicio,
+                FechaFin = request.FechaFin,
+                SubtotalReserva = request.SubtotalReserva,
+                ValorIva = request.ValorIva,
+                TotalReserva = request.TotalReserva,
+                OrigenCanalReserva = request.OrigenCanalReserva,
+                ContactoEmail = request.ContactoEmail,
+                ContactoTelefono = request.ContactoTelefono,
+                Observaciones = request.Observaciones,
+
+                // 🔥 CLAVE: simular admin
+                IdUsuario = 0
+            };
+
+            // 🔥 llamar lógica real
+            var reserva = await CrearAsync(internalRequest);
+
+            // 🔥 mapear respuesta
+            return new ReservaBookingResponse
+            {
+                IdReserva = reserva.IdReserva,
+                CodigoReserva = reserva.CodigoReserva,
+                IdCliente = reserva.IdCliente,
+                IdPasajero = reserva.IdPasajero,
+                IdVuelo = reserva.IdVuelo,
+                IdAsiento = reserva.IdAsiento,
+                FechaInicio = reserva.FechaInicio,
+                FechaFin = reserva.FechaFin,
+                TotalReserva = reserva.TotalReserva,
+                EstadoReserva = reserva.EstadoReserva
+            };
+        }
+
+        public async Task<bool> ActualizarEstadoBookingAsync(int id, ActualizarEstadoReservaBookingRequest request)
+        {
+            var internalRequest = new ActualizarEstadoReservaRequest
+            {
+                EstadoReserva = request.EstadoReserva,
+                MotivoCancelacion = request.MotivoCancelacion
+            };
+
+            return await CambiarEstadoAsync(id, internalRequest);
+        }
+
+
+
     }
 }

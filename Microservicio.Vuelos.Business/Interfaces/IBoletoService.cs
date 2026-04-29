@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using Microservicio.Vuelos.Business.DTOs.Internal.Boleto;
+using Microservicio.Vuelos.Business.DTOs.Booking.Boleto;
 
 namespace Microservicio.Vuelos.Business.Interfaces
 {
@@ -44,5 +45,12 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================
         Task<bool> EliminarAsync(int id);
+
+
+        // booking
+        Task<BoletoBookingResponse> CrearBookingAsync(CrearBoletoBookingRequest request);
+
+        Task<IEnumerable<BoletoBookingResponse>> GetByReservaBookingAsync(int idReserva);
+
     }
 }

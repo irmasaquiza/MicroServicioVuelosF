@@ -8,6 +8,7 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.Business.DTOs.Booking.Vuelo;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -262,6 +263,46 @@ namespace Microservicio.Vuelos.Business.Services
 
             await _asientoDataService.CreateRangeAsync(asientos);
         }
+
+        // boooking
+
+        public async Task<IEnumerable<VueloBookingResponse>> BuscarBookingAsync(VueloBookingFiltroRequest request)
+        {
+            // 🔥 convertir fecha a rango
+            var fechaInicio = request.FechaSalida.Date;
+            var fechaFin = request.FechaSalida.Date.AddDays(1).AddTicks(-1);
+
+            // 🔥 armar filtro internal
+            var filtroInternal = new VueloFiltroRequest
+            {
+                IdAeropuertoOrigen = request.IdAeropuertoOrigen,
+                IdAeropuertoDestino = request.IdAeropuertoDestino,
+                EstadoVuelo = request.EstadoVuelo,
+                FechaSalidaInicio = fechaInicio,
+                FechaSalidaFin = fechaFin,
+                Page = request.Page,
+                PageSize = request.PageSize
+            };
+
+            // 🔥 reutilizar lógica existente
+            var vuelos = await FiltrarAsync(filtroInternal);
+
+            // 🔥 mapear a Booking
+            return vuelos.Select(v => new VueloBookingResponse
+            {
+                IdVuelo = v.IdVuelo,
+                NumeroVuelo = v.NumeroVuelo,
+                IdAeropuertoOrigen = v.IdAeropuertoOrigen,
+                IdAeropuertoDestino = v.IdAeropuertoDestino,
+                FechaHoraSalida = v.FechaHoraSalida,
+                FechaHoraLlegada = v.FechaHoraLlegada,
+                DuracionMin = v.DuracionMin,
+                PrecioBase = v.PrecioBase,
+                CapacidadTotal = v.CapacidadTotal,
+                EstadoVuelo = v.EstadoVuelo
+            });
+        }
+
 
 
     }

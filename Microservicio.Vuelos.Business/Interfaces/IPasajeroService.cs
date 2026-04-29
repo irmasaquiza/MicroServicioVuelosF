@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microservicio.Vuelos.Business.DTOs.Booking.Pasajero;
+using Microservicio.Vuelos.Business.DTOs.Internal.Pasajero;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Text;
-
-using System.Collections.Generic;
 using System.Threading.Tasks;
-
-using Microservicio.Vuelos.Business.DTOs.Internal.Pasajero;
+using Microservicio.Vuelos.Business.DTOs.Booking.Pasajero;
 
 namespace Microservicio.Vuelos.Business.Interfaces
 {
@@ -40,5 +40,11 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================
         Task<bool> EliminarAsync(int id);
-    }
+
+
+
+        // booking
+
+        Task<PasajeroBookingResponse> CrearBookingAsync(CrearPasajeroBookingRequest request);
+}
 }

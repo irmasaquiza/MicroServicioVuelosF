@@ -12,6 +12,7 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using Microservicio.Vuelos.Business.DTOs.Booking.Factura;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -201,6 +202,49 @@ namespace Microservicio.Vuelos.Business.Services
 
             await _facturaDataService.UpdateAsync(factura);
         }
+
+        // boooking 
+
+        public async Task<FacturaBookingResponse> GetByReservaBookingAsync(int idReserva)
+        {
+            var facturas = await _facturaDataService.GetByReservaAsync(idReserva);
+
+            var factura = facturas.FirstOrDefault();
+
+            if (factura == null)
+                throw new BusinessException("FACTURA_NO_ENCONTRADA");
+
+            return new FacturaBookingResponse
+            {
+                IdFactura = factura.IdFactura,
+                IdReserva = factura.IdReserva,
+                NumeroFactura = factura.NumeroFactura,
+                FechaEmision = factura.FechaEmision,
+                Subtotal = factura.Subtotal,
+                ValorIva = factura.ValorIva,
+                Total = factura.Total,
+                Estado = factura.Estado
+            };
+        }
+        public async Task<bool> PagarBookingAsync(int idFactura)
+        {
+            var factura = await _facturaDataService.GetByIdAsync(idFactura);
+
+            if (factura == null)
+                throw new BusinessException("FACTURA_NO_ENCONTRADA");
+
+            if (factura.Estado == "APR")
+                throw new BusinessException("FACTURA_YA_PAGADA");
+
+            // 🔥 simular pago exitoso
+            factura.Estado = "APR";
+
+            await _facturaDataService.UpdateAsync(factura);
+
+            return true;
+        }
+
+
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Cliente;
 
 using Microservicio.Vuelos.Business.DTOs.Internal.Cliente;
 
@@ -42,5 +43,13 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // 🔥 ELIMINAR (LÓGICO)
         // ============================================================
         Task<bool> EliminarAsync(int id);
-    }
+
+
+
+        // booking 
+        Task<ClienteBookingResponse> CrearBookingAsync(CrearClienteBookingRequest request);
+
+        Task<IEnumerable<ClienteBookingResponse>> BuscarBookingAsync(string numeroIdentificacion, string correo);
+
+}
 }

@@ -12,6 +12,7 @@ using Microservicio.Vuelos.Business.Interfaces;
 using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
+using Microservicio.Vuelos.Business.DTOs.Booking.Cliente;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -142,6 +143,70 @@ namespace Microservicio.Vuelos.Business.Services
             await _clienteDataService.DeleteAsync(id);
 
             return true;
+        }
+
+
+
+        // booking
+
+public async Task<ClienteBookingResponse> CrearBookingAsync(CrearClienteBookingRequest request)
+    {
+        var internalRequest = new CrearClienteRequest
+        {
+            TipoIdentificacion = request.TipoIdentificacion,
+            NumeroIdentificacion = request.NumeroIdentificacion,
+            Nombres = request.Nombres,
+            Apellidos = request.Apellidos,
+            Correo = request.Correo,
+            Telefono = request.Telefono,
+            Direccion = request.Direccion,
+            IdCiudadResidencia = request.IdCiudadResidencia,
+            IdPaisNacionalidad = request.IdPaisNacionalidad,
+            FechaNacimiento = request.FechaNacimiento,
+            Nacionalidad = request.Nacionalidad,
+            Genero = request.Genero
+        };
+
+        var cliente = await CrearAsync(internalRequest);
+
+        return new ClienteBookingResponse
+        {
+            IdCliente = cliente.IdCliente,
+            ClienteGuid = cliente.ClienteGuid.ToString(),
+            TipoIdentificacion = cliente.TipoIdentificacion,
+            NumeroIdentificacion = cliente.NumeroIdentificacion,
+            Nombres = cliente.Nombres,
+            Apellidos = cliente.Apellidos,
+            Correo = cliente.Correo,
+            Telefono = cliente.Telefono,
+            Estado = cliente.Estado
+        };
+    }
+
+
+
+        public async Task<IEnumerable<ClienteBookingResponse>> BuscarBookingAsync(string numeroIdentificacion, string correo)
+        {
+            var clientes = await _clienteDataService.GetAllAsync();
+
+            var filtrados = clientes
+                .Where(c =>
+                    (!string.IsNullOrEmpty(numeroIdentificacion) && c.NumeroIdentificacion == numeroIdentificacion) ||
+                    (!string.IsNullOrEmpty(correo) && c.Correo == correo))
+                .ToList();
+
+            return filtrados.Select(c => new ClienteBookingResponse
+            {
+                IdCliente = c.IdCliente,
+                ClienteGuid = c.ClienteGuid.ToString(),
+                TipoIdentificacion = c.TipoIdentificacion,
+                NumeroIdentificacion = c.NumeroIdentificacion,
+                Nombres = c.Nombres,
+                Apellidos = c.Apellidos,
+                Correo = c.Correo,
+                Telefono = c.Telefono,
+                Estado = c.Estado
+            });
         }
     }
 }

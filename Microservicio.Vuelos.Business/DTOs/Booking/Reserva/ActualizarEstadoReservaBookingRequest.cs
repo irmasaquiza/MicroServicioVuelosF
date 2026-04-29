@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Microservicio.Vuelos.Business.DTOs.Booking.Reserva
 {
-    internal class ActualizarEstadoReservaBookingRequest
+    public class ActualizarEstadoReservaBookingRequest
     {
+        public string EstadoReserva { get; set; }
+
+        public string MotivoCancelacion { get; set; }
     }
 }

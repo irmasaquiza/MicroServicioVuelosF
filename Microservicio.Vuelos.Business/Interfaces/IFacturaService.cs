@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Factura;
 
 using Microservicio.Vuelos.Business.DTOs.Internal.Factura;
 
@@ -47,5 +48,12 @@ namespace Microservicio.Vuelos.Business.Interfaces
         // ============================================================
         Task<bool> EliminarAsync(int id);
 
+
+
+        // booking
+
+        Task<FacturaBookingResponse> GetByReservaBookingAsync(int idReserva);
+
+        Task<bool> PagarBookingAsync(int idFactura);
     }
 }

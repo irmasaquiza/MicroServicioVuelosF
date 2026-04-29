@@ -4,7 +4,7 @@ using System.Text;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microservicio.Vuelos.Business.DTOs.Booking.Reserva;
 using Microservicio.Vuelos.Business.DTOs.Internal.Reserva;
 
 namespace Microservicio.Vuelos.Business.Interfaces
@@ -62,6 +62,11 @@ namespace Microservicio.Vuelos.Business.Interfaces
         Task<bool> EliminarAsync(int id);
 
 
+        Task<bool> ActualizarEstadoBookingAsync(int id, ActualizarEstadoReservaBookingRequest request);
+        Task<ReservaBookingResponse> CrearBookingAsync(CrearReservaBookingRequest request);
 
-    }
+
+
+
+}
 }

@@ -2,9 +2,7 @@
 // ============================================================
 // Services/PasajeroService.cs
 // ============================================================
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Pasajero;
 using Microservicio.Vuelos.Business.DTOs.Internal.Pasajero;
 using Microservicio.Vuelos.Business.Exceptions;
 using Microservicio.Vuelos.Business.Interfaces;
@@ -12,6 +10,10 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Pasajero;
 
 namespace Microservicio.Vuelos.Business.Services
 {
@@ -118,6 +120,41 @@ namespace Microservicio.Vuelos.Business.Services
             await _pasajeroDataService.DeleteAsync(id);
             return true;
         }
+
+
+        // booking
+
+    public async Task<PasajeroBookingResponse> CrearBookingAsync(CrearPasajeroBookingRequest request)
+    {
+        var internalRequest = new CrearPasajeroRequest
+        {
+            NombrePasajero = request.NombrePasajero,
+            ApellidoPasajero = request.ApellidoPasajero,
+            TipoDocumentoPasajero = request.TipoDocumentoPasajero,
+            NumeroDocumentoPasajero = request.NumeroDocumentoPasajero,
+            IdCliente = request.IdCliente,
+            FechaNacimientoPasajero = request.FechaNacimientoPasajero,
+            NacionalidadPasajero = request.NacionalidadPasajero,
+            EmailContactoPasajero = request.EmailContactoPasajero,
+            TelefonoContactoPasajero = request.TelefonoContactoPasajero,
+            GeneroPasajero = request.GeneroPasajero,
+            RequiereAsistencia = request.RequiereAsistencia,
+            ObservacionesPasajero = request.ObservacionesPasajero
+        };
+
+        var pasajero = await CrearAsync(internalRequest);
+
+        return new PasajeroBookingResponse
+        {
+            IdPasajero = pasajero.IdPasajero,
+            NombrePasajero = pasajero.NombrePasajero,
+            ApellidoPasajero = pasajero.ApellidoPasajero,
+            TipoDocumentoPasajero = pasajero.TipoDocumentoPasajero,
+            NumeroDocumentoPasajero = pasajero.NumeroDocumentoPasajero,
+            FechaNacimientoPasajero = pasajero.FechaNacimientoPasajero,
+            RequiereAsistencia = pasajero.RequiereAsistencia
+        };
     }
+}
 }
 

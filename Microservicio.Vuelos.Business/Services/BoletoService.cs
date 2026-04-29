@@ -2,9 +2,7 @@
 // Services/BoletoService.cs
 // ============================================================
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microservicio.Vuelos.Business.DTOs.Booking.Boleto;
 using Microservicio.Vuelos.Business.DTOs.Internal.Boleto;
 using Microservicio.Vuelos.Business.Exceptions;
 using Microservicio.Vuelos.Business.Interfaces;
@@ -12,7 +10,11 @@ using Microservicio.Vuelos.Business.Mappers;
 using Microservicio.Vuelos.Business.Validators;
 using Microservicio.Vuelos.DataManagement.Interfaces;
 using Microservicio.Vuelos.DataManagement.Models;
- 
+using Microservicio.Vuelos.DataManagement.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Microservicio.Vuelos.Business.Services
 {
     public class BoletoService : IBoletoService
@@ -316,6 +318,67 @@ namespace Microservicio.Vuelos.Business.Services
 
             // 🔥 5. mapear
             return filtrados.Select(BoletoBusinessMapper.ToResponse);
+        }
+
+
+        // ============================================================ booking
+
+
+        public async Task<BoletoBookingResponse> CrearBookingAsync(CrearBoletoBookingRequest request)
+         {
+                // 🔥 validar factura
+                var factura = await _facturaDataService.GetByIdAsync(request.IdFactura);
+
+                if (factura == null)
+                    throw new BusinessException("FACTURA_NO_ENCONTRADA");
+
+                if (factura.Estado != "APR")
+                    throw new BusinessException("FACTURA_NO_PAGADA");
+
+                // 🔥 crear request interno
+                var internalRequest = new CrearBoletoRequest
+                {
+                    IdReserva = request.IdReserva,
+                    IdVuelo = request.IdVuelo,
+                    IdAsiento = request.IdAsiento,
+                    IdFactura = request.IdFactura,
+                    Clase = request.Clase
+                };
+
+                var boleto = await CrearAsync(internalRequest);
+
+                return new BoletoBookingResponse
+                {
+                    IdBoleto = boleto.IdBoleto,
+                    CodigoBoleto = boleto.CodigoBoleto,
+                    IdReserva = boleto.IdReserva,
+                    IdVuelo = boleto.IdVuelo,
+                    IdAsiento = boleto.IdAsiento ?? 0,
+                    IdFactura = boleto.IdFactura,
+                    Clase = boleto.Clase,
+                    PrecioFinal = boleto.PrecioFinal,
+                    EstadoBoleto = boleto.EstadoBoleto,
+                    FechaEmision = boleto.FechaEmision
+                };
+        }
+
+        public async Task<IEnumerable<BoletoBookingResponse>> GetByReservaBookingAsync(int idReserva)
+        {
+            var boletos = await _boletoDataService.GetByReservaAsync(idReserva);
+
+            return boletos.Select(b => new BoletoBookingResponse
+            {
+                IdBoleto = b.IdBoleto,
+                CodigoBoleto = b.CodigoBoleto,
+                IdReserva = b.IdReserva,
+                IdVuelo = b.IdVuelo,
+                IdAsiento = b.IdAsiento ?? 0,
+                IdFactura = b.IdFactura,
+                Clase = b.Clase,
+                PrecioFinal = b.PrecioFinal,
+                EstadoBoleto = b.EstadoBoleto,
+                FechaEmision = b.FechaEmision
+            });
         }
     }
 }
