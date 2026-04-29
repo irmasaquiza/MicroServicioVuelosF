@@ -29,16 +29,41 @@ namespace Microservicio.Vuelos.Business.Services
             _pasajeroDataService = pasajeroDataService;
             _auditoria = auditoria;
         }
-
+        /* ANTES CREAR SIEMPRE EL PASAJERO 
         public async Task<PasajeroResponse> CrearAsync(CrearPasajeroRequest request)
         {
+
+
+
             PasajeroValidator.ValidarCrear(request);
 
             var dataModel = PasajeroBusinessMapper.ToDataModel(request);
             var creado = await _pasajeroDataService.CreateAsync(dataModel);
 
             return PasajeroBusinessMapper.ToResponse(creado);
+        }*/
+
+        public async Task<PasajeroResponse> CrearAsync(CrearPasajeroRequest request)
+        {
+            PasajeroValidator.ValidarCrear(request);
+
+            // 🔥 1. VALIDAR SI YA EXISTE
+            var existente = await _pasajeroDataService
+                .GetByDocumentoAsync(request.NumeroDocumentoPasajero);
+
+            if (existente != null)
+            {
+                // 🔥 reutilizar pasajero existente
+                return PasajeroBusinessMapper.ToResponse(existente);
+            }
+
+            // 🔥 2. SI NO EXISTE → CREAR NORMAL
+            var dataModel = PasajeroBusinessMapper.ToDataModel(request);
+            var creado = await _pasajeroDataService.CreateAsync(dataModel);
+
+            return PasajeroBusinessMapper.ToResponse(creado);
         }
+
 
         public async Task<PasajeroResponse> GetByIdAsync(int id)
         {
