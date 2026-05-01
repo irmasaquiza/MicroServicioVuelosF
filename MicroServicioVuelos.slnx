@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <File Path="Dockerfile" />
     <Project Path="Microservicio.Vuelos.Api/Microservicio.Vuelos.Api.csproj" />
     <Project Path="Microservicio.Vuelos.Business/Microservicio.Vuelos.Business.csproj" />
     <Project Path="Microservicio.Vuelos.DataAccess/Microservicio.Vuelos.DataAccess.csproj" />
