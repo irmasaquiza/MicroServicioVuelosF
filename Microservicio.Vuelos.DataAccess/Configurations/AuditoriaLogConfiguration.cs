@@ -22,8 +22,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🆔 GUID
             builder.Property(x => x.AuditoriaGuid)
@@ -46,11 +47,11 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("id_registro_afectado");
 
             builder.Property(x => x.DatosAnteriores)
-                   .HasColumnType("nvarchar(max)")
+                   .HasColumnType("text")
                    .HasColumnName("datos_anteriores");
 
             builder.Property(x => x.DatosNuevos)
-                   .HasColumnType("nvarchar(max)")
+                   .HasColumnType("text")
                    .HasColumnName("datos_nuevos");
 
             builder.Property(x => x.UsuarioEjecutor)

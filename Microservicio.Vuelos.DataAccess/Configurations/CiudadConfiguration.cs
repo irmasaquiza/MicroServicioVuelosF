@@ -22,9 +22,14 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("id_ciudad");
 
             // 🔁 RowVersion
-            builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
+           /* builder.Property(x => x.RowVersion)
+                   //.IsRowVersion()
                    .HasColumnName("row_version");
+           */
+            builder.Property(x => x.RowVersion)
+                    .HasColumnName("row_version")
+                    .HasDefaultValueSql("decode('00000001','hex')")
+                    .ValueGeneratedOnAdd();
 
             // 🔗 FK
             builder.Property(x => x.IdPais)

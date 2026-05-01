@@ -22,8 +22,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 FK
             builder.Property(x => x.IdVuelo)

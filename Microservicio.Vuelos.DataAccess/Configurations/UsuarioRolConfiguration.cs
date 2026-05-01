@@ -56,7 +56,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasDefaultValueSql("SYSUTCDATETIME()")
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
@@ -68,8 +68,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔒 Concurrencia
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 Relaciones
             builder.HasOne(x => x.Usuario)

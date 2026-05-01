@@ -27,8 +27,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 FK
             builder.Property(x => x.IdCliente)
@@ -51,7 +52,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaEmision)
                    .IsRequired()
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_emision");
 
             // 💰 Valores económicos
@@ -90,7 +91,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("estado");
 
             builder.Property(x => x.FechaInhabilitacionUtc)
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_inhabilitacion_utc");
 
             builder.Property(x => x.EsEliminado)
@@ -104,7 +105,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
@@ -112,7 +113,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("modificado_por_usuario");
 
             builder.Property(x => x.FechaModificacionUtc)
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_modificacion_utc");
 
             builder.Property(x => x.ModificacionIp)

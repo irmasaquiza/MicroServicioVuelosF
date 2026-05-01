@@ -23,8 +23,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 FK
             builder.Property(x => x.IdVuelo)
@@ -43,12 +44,12 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             // 🕒 Fechas
             builder.Property(x => x.FechaHoraLlegada)
                    .IsRequired()
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_hora_llegada");
 
             builder.Property(x => x.FechaHoraSalida)
                    .IsRequired()
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_hora_salida");
 
             // ⏱️ Duración
@@ -93,8 +94,8 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             // 🧾 Auditoría
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasDefaultValueSql("SYSUTCDATETIME()")
-                   .HasColumnType("datetime2(0)")
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.CreadoPorUsuario)
@@ -108,7 +109,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("modificado_por_usuario");
 
             builder.Property(x => x.FechaModificacionUtc)
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_modificacion_utc");
 
             builder.Property(x => x.ModificacionIp)

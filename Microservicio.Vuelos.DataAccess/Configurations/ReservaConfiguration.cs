@@ -62,8 +62,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             builder.Property(x => x.ModificacionIp).HasColumnName("modificacion_ip");
 
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔥 RELACIONES
             builder.HasOne(x => x.Cliente)

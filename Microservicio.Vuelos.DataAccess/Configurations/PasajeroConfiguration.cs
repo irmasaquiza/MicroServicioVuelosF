@@ -16,8 +16,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("id_pasajero");
 
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             builder.Property(x => x.IdCliente)
                    .HasColumnName("id_cliente")

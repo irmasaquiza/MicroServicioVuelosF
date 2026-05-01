@@ -24,7 +24,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
             // 🆔 GUID
             builder.Property(x => x.RolGuid)
                    .HasColumnName("rol_guid")
-                   .HasDefaultValueSql("NEWID()")
+                   .HasDefaultValueSql("gen_random_uuid()")
                    .IsRequired();
 
             // 🏷️ Campos
@@ -63,7 +63,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasDefaultValueSql("SYSUTCDATETIME()")
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
@@ -75,8 +75,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔒 Concurrencia
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 Relación N:M
             builder.HasMany(x => x.UsuariosRoles)

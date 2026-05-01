@@ -19,8 +19,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             // 🔁 RowVersion
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             // 🔗 FK
             builder.Property(x => x.IdCliente)
@@ -75,7 +76,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("alias");
 
             builder.Property(x => x.FechaUltimoUso)
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_ultimo_uso");
 
             // ⚙️ Estado
@@ -99,8 +100,8 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasDefaultValueSql("SYSUTCDATETIME()")
-                   .HasColumnType("datetime2(0)")
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
@@ -108,7 +109,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("modificado_por_usuario");
 
             builder.Property(x => x.FechaModificacionUtc)
-                   .HasColumnType("datetime2(0)")
+                   .HasColumnType("timestamp")
                    .HasColumnName("fecha_modificacion_utc");
 
             builder.Property(x => x.ModificacionIp)

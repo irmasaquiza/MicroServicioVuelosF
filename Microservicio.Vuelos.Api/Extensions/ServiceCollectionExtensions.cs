@@ -6,7 +6,7 @@ using Microservicio.Vuelos.DataManagement.Services;
 
 using Microservicio.Vuelos.DataManagement.UoW;
 using Microservicio.Vuelos.DataAccess.Context;
-
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microservicio.Vuelos.Api.Extensions
@@ -19,7 +19,18 @@ namespace Microservicio.Vuelos.Api.Extensions
             // 🔥 DB CONTEXT
             // ============================================================
             services.AddDbContext<SistemaVuelosDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            {
+                var provider = configuration["DatabaseProvider"];
+
+                if (provider == "Postgres")
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+                }
+                else
+                {
+                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                }
+            });
 
             // ============================================================
             // 🔥 UNIT OF WORK (ESTO TE FALTABA 💀)

@@ -18,7 +18,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.UsuarioGuid)
                    .HasColumnName("usuario_guid")
-                   .HasDefaultValueSql("NEWID()")
+                   .HasDefaultValueSql("gen_random_uuid()")
                    .IsRequired();
 
             builder.Property(x => x.IdCliente)
@@ -77,7 +77,7 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
 
             builder.Property(x => x.FechaRegistroUtc)
                    .IsRequired()
-                   .HasDefaultValueSql("SYSUTCDATETIME()")
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP")
                    .HasColumnName("fecha_registro_utc");
 
             builder.Property(x => x.ModificadoPorUsuario)
@@ -92,8 +92,9 @@ namespace Microservicio.Vuelos.DataAccess.Configuration
                    .HasColumnName("modificacion_ip");
 
             builder.Property(x => x.RowVersion)
-                   .IsRowVersion()
-                   .HasColumnName("row_version");
+        .HasColumnName("row_version")
+        .HasDefaultValueSql("decode('00000001','hex')")
+        .ValueGeneratedOnAdd();
 
             builder.HasMany(x => x.UsuariosRoles)
                    .WithOne(ur => ur.Usuario)

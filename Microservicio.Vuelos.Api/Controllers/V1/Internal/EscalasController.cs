@@ -96,9 +96,16 @@ namespace Microservicio.Vuelos.Api.Controllers.V1.Internal
             {
                 return UnprocessableEntity(ApiErrorResponse.FromBusiness(ex));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, ApiErrorResponse.ErrorInterno());
+                return StatusCode(500, new
+                {
+                    success = false,
+                    tipo = "ERROR_INTERNO",
+                    error = ex.Message,
+                    detalle = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
