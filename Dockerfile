@@ -1,10 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /app
+
 COPY . .
 
-WORKDIR /src/src/Microservicio.Vuelos.Api
-RUN dotnet restore Microservicio.Vuelos.Api.csproj
-RUN dotnet publish Microservicio.Vuelos.Api.csproj -c Release -o /app/publish
+RUN dotnet restore Microservicio.Vuelos.Api/Microservicio.Vuelos.Api.csproj
+RUN dotnet publish Microservicio.Vuelos.Api/Microservicio.Vuelos.Api.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
